@@ -71,7 +71,7 @@ function attachParser(parser) {
     let openingFenceIndentSize
     let openingFenceSize
     let openingFenceContentStart
-    let closingFence
+    let isClosingFence
     let closingFenceSize
     let lineContentStart
     let lineContentEnd
@@ -94,7 +94,10 @@ function attachParser(parser) {
     if (openingFenceSize < minFenceCount) {
       return
     }
-
+    // Skip extra delimiters after the fence.
+    while (index < length && value.charCodeAt(index) === delimiterSign) {
+      index++
+    }
     // Skip spacing after the fence.
     while (index < length && value.charCodeAt(index) === space) {
       index++
@@ -138,7 +141,7 @@ function attachParser(parser) {
     lineEnd = lineEnd === -1 ? length : lineEnd
 
     while (index < length) {
-      closingFence = false
+      isClosingFence = false
       lineContentStart = index
       lineContentEnd = lineEnd
       lineIndex = lineEnd
@@ -164,10 +167,10 @@ function attachParser(parser) {
 
       // Check if this is a valid closing fence line.
       if (
-        openingFenceSize <= closingFenceSize &&
+        closingFenceSize >= minFenceCount &&
         value.indexOf(delimiterSignChar, lineContentStart) === lineIndex
       ) {
-        closingFence = true
+        isClosingFence = true
         lineContentEnd = lineIndex
       }
 
@@ -182,7 +185,7 @@ function attachParser(parser) {
       }
 
       // If this is a closing fence, skip final spacing.
-      if (closingFence) {
+      if (isClosingFence) {
         while (
           lineContentEnd > lineContentStart &&
           value.charCodeAt(lineContentEnd - 1) === space
@@ -192,11 +195,11 @@ function attachParser(parser) {
       }
 
       // If this is a content line, or if there is content before the fence:
-      if (!closingFence || lineContentStart !== lineContentEnd) {
+      if (!isClosingFence || lineContentStart !== lineContentEnd) {
         content.push(value.slice(lineContentStart, lineContentEnd))
       }
 
-      if (closingFence) {
+      if (isClosingFence) {
         break
       }
 
@@ -212,8 +215,15 @@ function attachParser(parser) {
       value: content,
       data: {
         hName: 'div',
-        hProperties: {className: classList.concat()},
-        hChildren: [{type: 'text', value: content}]
+        hProperties: {
+          className: classList.concat()
+        },
+        hChildren: [
+          {
+            type: 'text',
+            value: content
+          }
+        ]
       }
     })
   }

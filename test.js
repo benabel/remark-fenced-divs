@@ -126,6 +126,21 @@ test('remark-math', function (t) {
     'should include values after the opening fence (except for spacing #2)'
   )
   t.deepEqual(
+    String(toHtml.processSync('::::::::::::::::::\n\\alpha\n:::')),
+    '<div class="math math-display">\\alpha</div>',
+    'should include values after the opening fence except for fence delimiter'
+  )
+  t.deepEqual(
+    String(toHtml.processSync('::::::::::::::::::     \n\\alpha\n:::')),
+    '<div class="math math-display">\\alpha</div>',
+    'should include values after the opening fence except for fence delimiter or space'
+  )
+  t.deepEqual(
+    String(toHtml.processSync(':::     :::\n\\alpha\n:::')),
+    '<p>:::     :::\n\\alpha\n:::</p>',
+    'should not allow delimiters after spaces on the opening fence'
+  )
+  t.deepEqual(
     String(toHtml.processSync(':::\n\\alpha\nmust  :::')),
     '<div class="math math-display">\\alpha\nmust</div>',
     'should include values before the closing fence (except for spacing #1)'
@@ -140,7 +155,16 @@ test('remark-math', function (t) {
     '<div class="math math-display">\\alpha</div>',
     'should exclude spacing after the closing fence'
   )
-
+  t.deepEqual(
+    String(toHtml.processSync(':::\n\\alpha:::::::')),
+    '<div class="math math-display">\\alpha</div>',
+    'should allow more than three delimiters for closing fence'
+  )
+  t.deepEqual(
+    String(toHtml.processSync(':::\n\\alpha:::::::      ')),
+    '<div class="math math-display">\\alpha</div>',
+    'should allow more than three delimiters and spaces for closing fence'
+  )
   t.deepEqual(
     unified()
       .use(parse, {position: false})
