@@ -18,14 +18,14 @@ test('remark-fenced-divs', function (t) {
     unified()
       .use(parse, {position: false})
       .use(fencedDiv)
-      .parse(':::\n\\alpha\\$\n:::'),
+      .parse('::: my-div\n\\alpha\\$\n:::'),
     u('root', [
       u(
         'fencedDiv',
         {
           data: {
             hName: 'div',
-            hProperties: {className: ['math', 'math-display']},
+            hProperties: {className: 'my-div'},
             hChildren: [u('text', '\\alpha\\$')]
           }
         },
@@ -39,7 +39,7 @@ test('remark-fenced-divs', function (t) {
     unified()
       .use(parse, {position: false})
       .use(fencedDiv)
-      .parse('tango\n:::\n\\alpha\n:::'),
+      .parse('tango\n::: my-div\n\\alpha\n:::'),
     u('root', [
       u('paragraph', [u('text', 'tango')]),
       u(
@@ -47,7 +47,7 @@ test('remark-fenced-divs', function (t) {
         {
           data: {
             hName: 'div',
-            hProperties: {className: ['math', 'math-display']},
+            hProperties: {className: 'my-div'},
             hChildren: [u('text', '\\alpha')]
           }
         },
@@ -61,14 +61,14 @@ test('remark-fenced-divs', function (t) {
     unified()
       .use(parse, {position: false})
       .use(fencedDiv)
-      .parse(':::\n\\alpha\n:::'),
+      .parse('::: my-div\n\\alpha\n:::'),
     u('root', [
       u(
         'fencedDiv',
         {
           data: {
             hName: 'div',
-            hProperties: {className: ['math', 'math-display']},
+            hProperties: {className: 'my-div'},
             hChildren: [u('text', '\\alpha')]
           }
         },
@@ -121,61 +121,78 @@ test('remark-fenced-divs', function (t) {
   )
   t.deepEqual(
     String(toHtml.processSync(':::  must\n\\alpha\n:::')),
-    '<div class="math math-display">must\n\\alpha</div>',
-    'should include values after the opening fence (except for spacing #1)'
+    '<div class="must">\\alpha</div>',
+    'should allow extra spaces before class names'
   )
   t.deepEqual(
-    String(toHtml.processSync(':::  \n\\alpha\n:::')),
-    '<div class="math math-display">\\alpha</div>',
+    String(toHtml.processSync(':::  my-div\n\\alpha\n:::')),
+    '<div class="my-div">\\alpha</div>',
     'should include values after the opening fence (except for spacing #2)'
   )
   t.deepEqual(
-    String(toHtml.processSync('::::::::::::::::::\n\\alpha\n:::')),
-    '<div class="math math-display">\\alpha</div>',
+    String(toHtml.processSync(':::::::::::::::::: my-div\n\\alpha\n:::')),
+    '<div class="my-div">\\alpha</div>',
     'should include values after the opening fence except for fence delimiter'
   )
   t.deepEqual(
-    String(toHtml.processSync('::::::::::::::::::     \n\\alpha\n:::')),
-    '<div class="math math-display">\\alpha</div>',
-    'should include values after the opening fence except for fence delimiter or space'
+    String(toHtml.processSync(':::::::::::::::::: my-div::::\n\\alpha\n:::')),
+    '<div class="my-div">\\alpha</div>',
+    'should allow fence delimiter at the end of the opening fence without space'
+  )
+  t.deepEqual(
+    String(toHtml.processSync(':::::::::::::::::: my-div  ::::\n\\alpha\n:::')),
+    '<div class="my-div">\\alpha</div>',
+    'should allow fence delimiter at the end of the opening fence with spaces'
+  )
+  t.deepEqual(
+    String(toHtml.processSync(':::::::::::::::::: my-div    \n\\alpha\n:::')),
+    '<div class="my-div">\\alpha</div>',
+    'should allow fence delimiter or space at the end of the opening fence'
+  )
+  t.deepEqual(
+    String(
+      toHtml.processSync(':::::::::::::::::: my-div    :::::   \n\\alpha\n:::')
+    ),
+    '<div class="my-div">\\alpha</div>',
+    'should allow fence delimiter or space at the end of the opening fence'
   )
   t.deepEqual(
     String(toHtml.processSync(':::     :::\n\\alpha\n:::')),
     '<p>:::     :::\n\\alpha\n:::</p>',
-    'should not allow delimiters after spaces on the opening fence'
+    'should not allow empty attribute in the opening fence'
   )
   t.deepEqual(
-    String(toHtml.processSync(':::\n\\alpha\nmust  :::')),
-    '<div class="math math-display">\\alpha\nmust</div>',
+    String(toHtml.processSync('::: my-div\n\\alpha\nmust  :::')),
+    '<div class="my-div">\\alpha\nmust</div>',
     'should include values before the closing fence (except for spacing #1)'
   )
   t.deepEqual(
-    String(toHtml.processSync(':::\n\\alpha:::  ')),
-    '<div class="math math-display">\\alpha</div>',
+    String(toHtml.processSync('::: my-div\n\\alpha:::  ')),
+    '<div class="my-div">\\alpha</div>',
     'should exclude spacing after the closing fence'
   )
   t.deepEqual(
-    String(toHtml.processSync(':::\n\\alpha:::::::')),
-    '<div class="math math-display">\\alpha</div>',
+    String(toHtml.processSync('::: my-div\n\\alpha:::::::')),
+    '<div class="my-div">\\alpha</div>',
     'should allow more than three delimiters for closing fence'
   )
   t.deepEqual(
-    String(toHtml.processSync(':::\n\\alpha:::::::      ')),
-    '<div class="math math-display">\\alpha</div>',
+    String(toHtml.processSync('::: my-div\n\\alpha:::::::      ')),
+    '<div class="my-div">\\alpha</div>',
     'should allow more than three delimiters and spaces for closing fence'
   )
   t.deepEqual(
     unified()
       .use(parse, {position: false})
       .use(fencedDiv)
-      .parse(':::\n\\alpha\n:::\n```\nbravo\n```\n'),
+      .parse('::: my-div\n\\alpha\n:::\n```\nbravo\n```\n'),
     u('root', [
       u(
         'fencedDiv',
         {
           data: {
             hName: 'div',
-            hProperties: {className: ['math', 'math-display']},
+            hProperties: {className: 'my-div'},
             hChildren: [u('text', '\\alpha')]
           }
         },
@@ -207,8 +224,8 @@ test('remark-fenced-divs', function (t) {
     'markdown-it-katex#10: …but 4 means a code block'
   )
   t.deepEqual(
-    String(toHtml.processSync(':::\n1+1 = 2')),
-    '<div class="math math-display">1+1 = 2</div>',
+    String(toHtml.processSync('::: my-div\n1+1 = 2')),
+    '<div class="my-div">1+1 = 2</div>',
     'fencedDiv block self-closes at the end of document'
   )
   t.end()

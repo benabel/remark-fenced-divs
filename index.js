@@ -25,8 +25,6 @@ const delimiterSign = delimiterSignChar.charCodeAt() // 58  ':'
 
 const minFenceCount = 3
 
-const classList = ['math', 'math-display']
-
 function fencedPlugin() {
   const parser = this.Parser
   const compiler = this.Compiler
@@ -75,6 +73,7 @@ function attachParser(parser) {
     let closingFenceSize
     let lineContentStart
     let lineContentEnd
+    let attributes = ''
 
     // Don't allow initial spacing.
     if (value.charCodeAt(index) === space) {
@@ -92,12 +91,40 @@ function attachParser(parser) {
     if (openingFenceSize < minFenceCount) {
       return
     }
-    // Skip extra delimiters after the fence.
+    // Skip spacing before the attributes.
+    while (index < length && value.charCodeAt(index) === space) {
+      index++
+    }
+    // Don't allow empty attribute
+    if (
+      value.charCodeAt(index) === lineFeed ||
+      value.charCodeAt(index) === delimiterSign
+    ) {
+      return
+    }
+    // Capture attributes
+    while (
+      index < length &&
+      !(
+        value.charCodeAt(index) === space ||
+        value.charCodeAt(index) === delimiterSign ||
+        value.charCodeAt(index) === lineFeed
+      )
+    ) {
+      attributes += value.charAt(index)
+      index++
+    }
+    // Skip spacing and delimiters after the attributes.
+    while (index < length && value.charCodeAt(index) === space) {
+      index++
+    }
     while (index < length && value.charCodeAt(index) === delimiterSign) {
       index++
     }
-    // Skip spacing after the fence.
     while (index < length && value.charCodeAt(index) === space) {
+      index++
+    }
+    while (index < length && value.charCodeAt(index) !== lineFeed) {
       index++
     }
 
@@ -213,13 +240,15 @@ function attachParser(parser) {
 
     content = content.join('\n')
 
+    // Process attributes
+
     return eat(value.slice(0, lineEnd))({
       type: 'fencedDiv',
       value: content,
       data: {
         hName: 'div',
         hProperties: {
-          className: classList.concat()
+          className: attributes
         },
         hChildren: [
           {
