@@ -50,7 +50,8 @@
     "sub-install": "cd test/fenced_divs/v16 && npm install && cd ../..",
     "format": "remark . -qfo && prettier --write \"**/*.js\" && xo --fix",
     "start": "onchange -i '*.js' -- npm test",
-    "test": "node test"
+    "test": "node test",
+    "test-pandoc": "pandoc test/test.md -o test/test.html"
   },
   "prettier": {
     "tabWidth": 2,
