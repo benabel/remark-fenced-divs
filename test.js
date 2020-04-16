@@ -84,19 +84,35 @@ test('remark-fenced-divs', function (t) {
       .use(fencedDiv)
       .parse('  :::\n    \\alpha\n  :::'),
     u('root', [
-      u(
-        'fencedDiv',
-        {
-          data: {
-            hName: 'div',
-            hProperties: {className: ['math', 'math-display']},
-            hChildren: [u('text', '  \\alpha')]
-          }
-        },
-        '  \\alpha'
-      )
+      u('paragraph', {
+        children: [u('text', '  :::\n    \\alpha\n  :::')]
+      })
     ]),
-    'should support indented fencedDiv block'
+    'should not support indented fencedDiv block'
+  )
+  t.deepEqual(
+    unified()
+      .use(parse, {position: false})
+      .use(fencedDiv)
+      .parse('  :::\n    \\alpha\n:::'),
+    u('root', [
+      u('paragraph', {
+        children: [u('text', '  :::\n    \\alpha\n:::')]
+      })
+    ]),
+    'should not support indented opening fencedDiv block'
+  )
+  t.deepEqual(
+    unified()
+      .use(parse, {position: false})
+      .use(fencedDiv)
+      .parse(':::\n    \\alpha\n   :::'),
+    u('root', [
+      u('paragraph', {
+        children: [u('text', ':::\n    \\alpha\n   :::')]
+      })
+    ]),
+    'should not support indented closing fencedDiv block'
   )
   t.deepEqual(
     String(toHtml.processSync(':::just three colons')),
@@ -134,11 +150,6 @@ test('remark-fenced-divs', function (t) {
     'should include values before the closing fence (except for spacing #1)'
   )
   t.deepEqual(
-    String(toHtml.processSync(':::\n\\alpha\n  :::')),
-    '<div class="math math-display">\\alpha</div>',
-    'should include values before the closing fence (except for spacing #2)'
-  )
-  t.deepEqual(
     String(toHtml.processSync(':::\n\\alpha:::  ')),
     '<div class="math math-display">\\alpha</div>',
     'should exclude spacing after the closing fence'
@@ -174,6 +185,11 @@ test('remark-fenced-divs', function (t) {
     ]),
     'should not affect the next block'
   )
+  t.deepEqual(
+    String(toHtml.processSync('   :::\n   1+1 = 2\n   :::')),
+    '<p>   :::\n1+1 = 2\n:::</p>',
+    'Should not allow initial spacing'
+  )
 
   t.deepEqual(
     String(toHtml.processSync('aaa :: bbb')),
@@ -184,11 +200,6 @@ test('remark-fenced-divs', function (t) {
     String(toHtml.processSync('aaa $5.99 bbb')),
     '<p>aaa $5.99 bbb</p>',
     'markdown-it-katex#06: should require a closing delimiter'
-  )
-  t.deepEqual(
-    String(toHtml.processSync('   :::\n   1+1 = 2\n   :::')),
-    '<div class="math math-display">1+1 = 2</div>',
-    'markdown-it-katex#09: fencedDiv block can be indented up to 3 spaces'
   )
   t.deepEqual(
     String(toHtml.processSync('    :::\n    1+1 = 2\n    :::')),

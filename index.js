@@ -69,7 +69,6 @@ function attachParser(parser) {
     let content
     let lineEnd
     let lineIndex
-    let openingFenceIndentSize
     let openingFenceSize
     let openingFenceContentStart
     let isClosingFence
@@ -77,19 +76,17 @@ function attachParser(parser) {
     let lineContentStart
     let lineContentEnd
 
-    // Skip initial spacing.
-    while (index < length && value.charCodeAt(index) === space) {
-      index++
+    // Don't allow initial spacing.
+    if (value.charCodeAt(index) === space) {
+      return
     }
-
-    openingFenceIndentSize = index
 
     // Skip the fence.
     while (index < length && value.charCodeAt(index) === delimiterSign) {
       index++
     }
 
-    openingFenceSize = index - openingFenceIndentSize
+    openingFenceSize = index
 
     // Exit if there is not enough of a fence.
     if (openingFenceSize < minFenceCount) {
@@ -148,6 +145,11 @@ function attachParser(parser) {
       lineIndex = lineEnd
       closingFenceSize = 0
 
+      // Don't allow initial spacing in closing fence.
+      if (value.charCodeAt(index) === space) {
+        return
+      }
+
       // First, let’s see if this is a valid closing fence.
       // Skip trailing white space
       while (
@@ -179,7 +181,7 @@ function attachParser(parser) {
       // Skip initial spacing.
       while (
         lineContentStart <= lineContentEnd &&
-        lineContentStart - index < openingFenceIndentSize &&
+        lineContentStart < index &&
         value.charCodeAt(lineContentStart) === space
       ) {
         lineContentStart++

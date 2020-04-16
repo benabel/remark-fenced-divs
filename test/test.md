@@ -31,3 +31,15 @@ This is a warning.
 This is a warning within a warning.
 :::
 ::::::::::::::::::
+
+## divs shouldn't be indented
+
+  ::::: {#special .sidebar}
+  
+  Here is a paragraph.
+  
+  
+  
+  And another.
+  
+  :::::
