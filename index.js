@@ -17,12 +17,11 @@ function isRemarkCompiler(compiler) {
   return Boolean(compiler && compiler.prototype && compiler.prototype.visitors)
 }
 
-const lineFeed = 10 //  '\n'
 const space = 32 // ' '
-const delimiterSign = 58 // ':'
-
 const lineFeedChar = '\n'
+const lineFeed = lineFeedChar.charCodeAt() // 10  '\n'
 const delimiterSignChar = ':'
+const delimiterSign = delimiterSignChar.charCodeAt() // 58  ':'
 
 const minFenceCount = 3
 
@@ -48,22 +47,24 @@ function attachParser(parser) {
   const interruptList = proto.interruptList
   const interruptBlockquote = proto.interruptBlockquote
 
-  proto.blockTokenizers.math = fencedDivTokenizer
+  proto.blockTokenizers.fencedDiv = fencedDivTokenizer
 
-  blockMethods.splice(blockMethods.indexOf('fencedCode') + 1, 0, 'math')
+  blockMethods.splice(blockMethods.indexOf('fencedCode') + 1, 0, 'fencedDiv')
 
-  // Inject math to interrupt rules
+  // Inject fencedDiv to interrupt rules
   interruptParagraph.splice(interruptParagraph.indexOf('fencedCode') + 1, 0, [
-    'math'
+    'fencedDiv'
   ])
-  interruptList.splice(interruptList.indexOf('fencedCode') + 1, 0, ['math'])
+  interruptList.splice(interruptList.indexOf('fencedCode') + 1, 0, [
+    'fencedDiv'
+  ])
   interruptBlockquote.splice(interruptBlockquote.indexOf('fencedCode') + 1, 0, [
-    'math'
+    'fencedDiv'
   ])
 
   function fencedDivTokenizer(eat, value, silent) {
-    var length = value.length
-    var index = 0
+    const length = value.length
+    let index = 0
     let code
     let content
     let lineEnd
@@ -109,8 +110,8 @@ function attachParser(parser) {
     while (index < length) {
       code = value.charCodeAt(index)
 
-      // We don’t allow dollar signs here, as that could interfere with inline
-      // math.
+      // We don’t allow colon signs here after the fence
+      // TODO in fact it is allowed in pandoc spec
       if (code === delimiterSign) {
         return
       }

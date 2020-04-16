@@ -1,5 +1,5 @@
 {
-  "name": "remark-fenced_divs",
+  "name": "remark-fenced-divs",
   "version": "0.0.1",
   "description": "remark plugin to enable fenced_divs",
   "license": "MIT",
@@ -14,8 +14,8 @@
     "html",
     "stringify"
   ],
-  "repository": "benabel/remark-fenced_divs",
-  "bugs": "https://github.com/benabel/remark-fenced_divs/issues",
+  "repository": "benabel/remark-fenced-divs",
+  "bugs": "https://github.com/benabel/remark-fenced-divs/issues",
   "author": "Benjamin Abel <dev.abel@free.fr> (https://lyceum.fr)",
   "contributors": [
     "Benjamin Abel <dev.abel@free.fr> (https://lyceum.fr)"
