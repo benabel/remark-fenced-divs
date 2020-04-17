@@ -23,6 +23,6 @@ From pandoc reference: <https://pandoc.org/MANUAL.html#extension-fenced_divs>
 
 Code adapted from:
 
-*   [`remark-math`](https://github.com/Rokt33r/remark-math) and [`remark` code-fenced](https://github.com/remarkjs/remark/blob/master/packages/remark-parse/lib/tokenize/code-fenced.js) for the parser.
+*   [`remark-math`](https://github.com/Rokt33r/remark-math) and [`remark-containers`](https://github.com/Nevenall/remark-containers) for the parser.
 *   and [`remark-react`](https://github.com/remarkjs/remark-react) for the
     structure

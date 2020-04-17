@@ -240,24 +240,23 @@ function attachParser(parser) {
 
     content = content.join('\n')
 
-    // Process attributes
+    // TODO Process attributes to get classes, ids and data-attributes
 
-    return eat(value.slice(0, lineEnd))({
+    let node = {
       type: 'fencedDiv',
       value: content,
       data: {
         hName: 'div',
         hProperties: {
           className: attributes
-        },
-        hChildren: [
-          {
-            type: 'text',
-            value: content
-          }
-        ]
+        }
       }
-    })
+    }
+
+    // Tokenize content of the div
+    node.children = this.tokenizeBlock(content, eat.now())
+
+    return eat(value.slice(0, lineEnd))(node)
   }
 }
 
