@@ -17,11 +17,9 @@ function isRemarkCompiler(compiler) {
   return Boolean(compiler && compiler.prototype && compiler.prototype.visitors)
 }
 
-const space = 32 // ' '
-const lineFeedChar = '\n'
-const lineFeed = lineFeedChar.charCodeAt() // 10  '\n'
-const delimiterSignChar = ':'
-const delimiterSign = delimiterSignChar.charCodeAt() // 58  ':'
+const space = ' '
+const lineFeed = '\n'
+const delimiterSign = ':'
 
 const minFenceCount = 3
 
@@ -76,12 +74,12 @@ function attachParser(parser) {
     let attributes = ''
 
     // Don't allow initial spacing.
-    if (value.charCodeAt(index) === space) {
+    if (value.charAt(index) === space) {
       return
     }
 
     // Skip the fence.
-    while (index < length && value.charCodeAt(index) === delimiterSign) {
+    while (index < length && value.charAt(index) === delimiterSign) {
       index++
     }
 
@@ -92,13 +90,13 @@ function attachParser(parser) {
       return
     }
     // Skip spacing before the attributes.
-    while (index < length && value.charCodeAt(index) === space) {
+    while (index < length && value.charAt(index) === space) {
       index++
     }
     // Don't allow empty attribute
     if (
-      value.charCodeAt(index) === lineFeed ||
-      value.charCodeAt(index) === delimiterSign
+      value.charAt(index) === lineFeed ||
+      value.charAt(index) === delimiterSign
     ) {
       return
     }
@@ -106,25 +104,25 @@ function attachParser(parser) {
     while (
       index < length &&
       !(
-        value.charCodeAt(index) === space ||
-        value.charCodeAt(index) === delimiterSign ||
-        value.charCodeAt(index) === lineFeed
+        value.charAt(index) === space ||
+        value.charAt(index) === delimiterSign ||
+        value.charAt(index) === lineFeed
       )
     ) {
       attributes += value.charAt(index)
       index++
     }
     // Skip spacing and delimiters after the attributes.
-    while (index < length && value.charCodeAt(index) === space) {
+    while (index < length && value.charAt(index) === space) {
       index++
     }
-    while (index < length && value.charCodeAt(index) === delimiterSign) {
+    while (index < length && value.charAt(index) === delimiterSign) {
       index++
     }
-    while (index < length && value.charCodeAt(index) === space) {
+    while (index < length && value.charAt(index) === space) {
       index++
     }
-    while (index < length && value.charCodeAt(index) !== lineFeed) {
+    while (index < length && value.charAt(index) !== lineFeed) {
       index++
     }
 
@@ -132,7 +130,7 @@ function attachParser(parser) {
 
     // Eat everything after the fence.
     while (index < length) {
-      code = value.charCodeAt(index)
+      code = value.charAt(index)
 
       // We don’t allow colon signs here after the fence
       // TODO in fact it is allowed in pandoc spec
@@ -147,7 +145,7 @@ function attachParser(parser) {
       index++
     }
 
-    if (value.charCodeAt(index) !== lineFeed) {
+    if (value.charAt(index) !== lineFeed) {
       return
     }
 
@@ -162,7 +160,7 @@ function attachParser(parser) {
     }
 
     index++
-    lineEnd = value.indexOf(lineFeedChar, index + 1)
+    lineEnd = value.indexOf(lineFeed, index + 1)
     lineEnd = lineEnd === -1 ? length : lineEnd
 
     while (index < length) {
@@ -173,7 +171,7 @@ function attachParser(parser) {
       closingFenceSize = 0
 
       // Don't allow initial spacing in closing fence.
-      if (value.charCodeAt(index) === space) {
+      if (value.charAt(index) === space) {
         return
       }
 
@@ -181,7 +179,7 @@ function attachParser(parser) {
       // Skip trailing white space
       while (
         lineIndex > lineContentStart &&
-        value.charCodeAt(lineIndex - 1) === space
+        value.charAt(lineIndex - 1) === space
       ) {
         lineIndex--
       }
@@ -189,7 +187,7 @@ function attachParser(parser) {
       // Skip the fence.
       while (
         lineIndex > lineContentStart &&
-        value.charCodeAt(lineIndex - 1) === delimiterSign
+        value.charAt(lineIndex - 1) === delimiterSign
       ) {
         closingFenceSize++
         lineIndex--
@@ -198,7 +196,7 @@ function attachParser(parser) {
       // Check if this is a valid closing fence line.
       if (
         closingFenceSize >= minFenceCount &&
-        value.indexOf(delimiterSignChar, lineContentStart) === lineIndex
+        value.indexOf(delimiterSign, lineContentStart) === lineIndex
       ) {
         isClosingFence = true
         lineContentEnd = lineIndex
@@ -209,7 +207,7 @@ function attachParser(parser) {
       while (
         lineContentStart <= lineContentEnd &&
         lineContentStart < index &&
-        value.charCodeAt(lineContentStart) === space
+        value.charAt(lineContentStart) === space
       ) {
         lineContentStart++
       }
@@ -218,7 +216,7 @@ function attachParser(parser) {
       if (isClosingFence) {
         while (
           lineContentEnd > lineContentStart &&
-          value.charCodeAt(lineContentEnd - 1) === space
+          value.charAt(lineContentEnd - 1) === space
         ) {
           lineContentEnd--
         }
@@ -234,7 +232,7 @@ function attachParser(parser) {
       }
 
       index = lineEnd + 1
-      lineEnd = value.indexOf(lineFeedChar, index + 1)
+      lineEnd = value.indexOf(lineFeed, index + 1)
       lineEnd = lineEnd === -1 ? length : lineEnd
     }
 
@@ -266,6 +264,6 @@ function attachCompiler(compiler) {
   proto.visitors.fencedDiv = compileFencedDiv
 
   function compileFencedDiv(node) {
-    return `${delimiterSignChar}${delimiterSignChar}\n${node.value}\n${delimiterSignChar}${delimiterSignChar}`
+    return `${delimiterSign}${delimiterSign}\n${node.value}\n${delimiterSign}${delimiterSign}`
   }
 }
