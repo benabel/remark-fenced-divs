@@ -120,10 +120,6 @@ function attachParser(parser) {
       index++
     }
 
-    if (value.charAt(index) !== lineFeed) {
-      return
-    }
-
     if (silent) {
       return true
     }
@@ -171,16 +167,6 @@ function attachParser(parser) {
       ) {
         isClosingFence = true
         lineContentEnd = lineIndex
-      }
-
-      // Sweet, next, we need to trim the line.
-      // Skip initial spacing.
-      while (
-        lineContentStart <= lineContentEnd &&
-        lineContentStart < index &&
-        value.charAt(lineContentStart) === space
-      ) {
-        lineContentStart++
       }
 
       // If this is a closing fence, skip final spacing.
