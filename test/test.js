@@ -10,7 +10,7 @@ const fencedDiv = require('..')
 test('remark-fenced-divs', function (t) {
   const toHtml = unified()
     .use(parse)
-    .use(fencedDiv, {inlineMathDouble: true})
+    .use(fencedDiv)
     .use(remark2rehype)
     .use(rehypeStringify)
 

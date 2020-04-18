@@ -1,3 +1,7 @@
+::: my-div
+Don't need empty line if div at the beginning of the file.
+:::
+
 ## id and class
 
 ::::: {#special .sidebar}
@@ -43,3 +47,18 @@ This is a warning within a warning.
   And another.
   
   :::::
+
+
+## should be surrounded with blank lines
+
+Bonjour
+
+::: Warning ::::::
+This is a warning.
+:::
+Aurevoir
+
+## Don't auto close at end of file
+
+::: Warning ::::::
+This is a warning.

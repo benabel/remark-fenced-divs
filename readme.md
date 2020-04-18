@@ -2,7 +2,7 @@
 
 Fenced divs are some kind of generic syntax for block contents with a syntax similar to fenced code blocks but using : as delimiter instead of \`\`\`
 
-From pandoc reference: <https://pandoc.org/MANUAL.html#extension-fenced_divs>
+From `pandoc` reference: <https://pandoc.org/MANUAL.html#extension-fenced_divs>
 
 *   [x] A Div must start at the beginning of a line: it musn't be indented.
 *   [x] A Div starts with a fence containing at least three consecutive colons
@@ -17,13 +17,13 @@ From pandoc reference: <https://pandoc.org/MANUAL.html#extension-fenced_divs>
     consecutive colons at the beginning of the line.
 *   The fenced Div should be separated by blank lines:
 *   [*] from preceding 
-*   [ ] and  following blocks.
+*   [ ] and following blocks.
 *   [ ] The fenced Div can be nested.
 
-## Attributions
+## Acknowledgments
 
 Code adapted from:
 
 *   [`remark-math`](https://github.com/Rokt33r/remark-math) and [`remark-containers`](https://github.com/Nevenall/remark-containers) for the parser.
 *   and [`remark-react`](https://github.com/remarkjs/remark-react) for the
-    structure
+    structure.
