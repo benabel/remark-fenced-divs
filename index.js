@@ -166,7 +166,8 @@ function attachParser(parser) {
       // Check if this is a valid closing fence line.
       if (
         closingFenceSize >= minFenceCount &&
-        value.indexOf(delimiterSign, lineContentStart) === lineIndex
+        value.indexOf(delimiterSign, lineContentStart) === lineIndex &&
+        value.charAt(lineIndex - 1) === lineFeed
       ) {
         isClosingFence = true
         lineContentEnd = lineIndex
@@ -206,25 +207,28 @@ function attachParser(parser) {
       lineEnd = lineEnd === -1 ? length : lineEnd
     }
 
-    content = content.join('\n')
+    // Add the div node only if valid
+    if (isClosingFence) {
+      content = content.join('\n')
 
-    // TODO Process attributes to get classes, ids and data-attributes
+      // TODO Process attributes to get classes, ids and data-attributes
 
-    let node = {
-      type: 'fencedDiv',
-      value: content,
-      data: {
-        hName: 'div',
-        hProperties: {
-          className: attributes
+      let node = {
+        type: 'fencedDiv',
+        value: content,
+        data: {
+          hName: 'div',
+          hProperties: {
+            className: attributes
+          }
         }
       }
+
+      // Tokenize content of the div
+      node.children = this.tokenizeBlock(content, eat.now())
+
+      return eat(value.slice(0, lineEnd))(node)
     }
-
-    // Tokenize content of the div
-    node.children = this.tokenizeBlock(content, eat.now())
-
-    return eat(value.slice(0, lineEnd))(node)
   }
 }
 

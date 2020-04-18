@@ -156,21 +156,6 @@ test('remark-fenced-divs', function (t) {
     'should not allow empty attribute in the opening fence'
   )
   t.deepEqual(
-    String(toHtml.processSync('::: my-div\nThis is a paragraph.:::  ')),
-    '<div class="my-div"><p>This is a paragraph.</p></div>',
-    'should exclude spacing after the closing fence'
-  )
-  t.deepEqual(
-    String(toHtml.processSync('::: my-div\nThis is a paragraph.:::::::')),
-    '<div class="my-div"><p>This is a paragraph.</p></div>',
-    'should allow more than three delimiters for closing fence'
-  )
-  t.deepEqual(
-    String(toHtml.processSync('::: my-div\nThis is a paragraph.:::::::      ')),
-    '<div class="my-div"><p>This is a paragraph.</p></div>',
-    'should allow more than three delimiters and spaces for closing fence'
-  )
-  t.deepEqual(
     String(toHtml.processSync('   :::\n   1+1 = 2\n   :::')),
     '<p>   :::\n1+1 = 2\n:::</p>',
     'Should not allow initial spacing'
@@ -179,11 +164,6 @@ test('remark-fenced-divs', function (t) {
     String(toHtml.processSync('    :::\n    1+1 = 2\n    :::')),
     '<pre><code>:::\n1+1 = 2\n:::\n</code></pre>',
     'Should not allow initial spacing: 4 means a code block'
-  )
-  t.deepEqual(
-    String(toHtml.processSync('::: my-div\n1+1 = 2')),
-    '<div class="my-div"><p>1+1 = 2</p></div>',
-    'fencedDiv block self-closes at the end of document'
   )
   t.deepEqual(
     String(toHtml.processSync('tango\n::: my-div\nThis is a paragraph.\n:::')),
@@ -217,8 +197,30 @@ test('remark-fenced-divs', function (t) {
   )
   t.deepEqual(
     String(toHtml.processSync('::: my-div\nThis is a paragraph.\n\nmust  :::')),
-    '<div class="my-div"><p>This is a paragraph.</p><p>must</p></div>',
-    'TODO the closing fence should be at the beginning of the line ...should include values before the closing fence (except for spacing #1)'
+    '<p>::: my-div\nThis is a paragraph.</p>\n<p>must  :::</p>',
+    'the closing fence should be at the beginning of the line.'
+  )
+  t.deepEqual(
+    String(toHtml.processSync('::: my-div\n1+1 = 2')),
+    '<p>::: my-div\n1+1 = 2</p>',
+    'fencedDiv block should be closed'
+  )
+  t.deepEqual(
+    String(toHtml.processSync('::: my-div\nThis is a paragraph.\n:::  ')),
+    '<div class="my-div"><p>This is a paragraph.</p></div>',
+    'should exclude spacing after the closing fence'
+  )
+  t.deepEqual(
+    String(toHtml.processSync('::: my-div\nThis is a paragraph.\n:::::::')),
+    '<div class="my-div"><p>This is a paragraph.</p></div>',
+    'should allow more than three delimiters for closing fence'
+  )
+  t.deepEqual(
+    String(
+      toHtml.processSync('::: my-div\nThis is a paragraph.\n:::::::      ')
+    ),
+    '<div class="my-div"><p>This is a paragraph.</p></div>',
+    'should allow more than three delimiters and exclude spaces for closing fence'
   )
   t.end()
 })

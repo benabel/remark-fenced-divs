@@ -13,8 +13,8 @@ From pandoc reference: <https://pandoc.org/MANUAL.html#extension-fenced_divs>
         fenced_code_attributes). As with fenced code blocks, one can use either
         attributes in curly braces or
 *   [x] a single unbraced word, which will be treated as a class name.
-*   [x] The Div ends with another line containing a string of at least three
-    consecutive colons.
+*   [x] The Div must ends with another line containing a string of at least three
+    consecutive colons at the beginning of the line.
 *   The fenced Div should be separated by blank lines:
 *   [*] from preceding 
 *   [ ] and  following blocks.
