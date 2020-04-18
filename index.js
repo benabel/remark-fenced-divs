@@ -106,8 +106,8 @@ function attachParser(parser) {
     while (index < length && value.charAt(index) === space) {
       index++
     }
-    while (index < length && value.charAt(index) !== lineFeed) {
-      index++
+    if (value.charAt(index) !== lineFeed) {
+      return
     }
 
     openingFenceContentStart = index
@@ -179,10 +179,7 @@ function attachParser(parser) {
         }
       }
 
-      // If this is a content line, or if there is content before the fence:
-      if (!isClosingFence || lineContentStart !== lineContentEnd) {
-        content.push(value.slice(lineContentStart, lineContentEnd))
-      }
+      content.push(value.slice(lineContentStart, lineContentEnd))
 
       if (isClosingFence) {
         content = content.join('\n')

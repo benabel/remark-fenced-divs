@@ -222,5 +222,21 @@ test('remark-fenced-divs', function (t) {
     '<div class="my-div"><p>This is a paragraph.</p></div>',
     'should allow more than three delimiters and exclude spaces for closing fence'
   )
+  t.deepEqual(
+    String(
+      toHtml.processSync('::: my-div\nThis is a paragraph.\n:::::::    here')
+    ),
+    '<p>::: my-div\nThis is a paragraph.\n:::::::    here</p>',
+    'should not allow anything except spaces and delimiters at the end of the closing fence'
+  )
+  t.deepEqual(
+    String(
+      toHtml.processSync(
+        '::: Warning ::::::\nThis is a warning.\n\n::: Danger\nThis is a warning within a warning.\n:::\n\n\n::::::::::::::::::'
+      )
+    ),
+    '<div class="Warning"><p>This is a warning.</p>\n<div class="Danger">\n<p>This is a warning within a warning.</p>\n</div>\n</div>',
+    'should allow nested divs'
+  )
   t.end()
 })
