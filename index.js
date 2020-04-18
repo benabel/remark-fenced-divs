@@ -47,7 +47,6 @@ function attachParser(parser) {
   function fencedDivTokenizer(eat, value, silent) {
     const length = value.length
     let index = 0
-    let code
     let content
     let lineEnd
     let lineIndex
@@ -58,7 +57,6 @@ function attachParser(parser) {
     let lineContentStart
     let lineContentEnd
     let attributes = ''
-
     // Don't allow initial spacing.
     if (value.charAt(index) === space) {
       return
@@ -116,18 +114,9 @@ function attachParser(parser) {
 
     // Eat everything after the fence.
     while (index < length) {
-      code = value.charAt(index)
-
-      // We don’t allow colon signs here after the fence
-      // TODO in fact it is allowed in pandoc spec
-      if (code === delimiterSign) {
-        return
-      }
-
-      if (code === lineFeed) {
+      if (value.charAt(index) === lineFeed) {
         break
       }
-
       index++
     }
 
@@ -155,11 +144,6 @@ function attachParser(parser) {
       lineContentEnd = lineEnd
       lineIndex = lineEnd
       closingFenceSize = 0
-
-      // Don't allow initial spacing in closing fence.
-      if (value.charAt(index) === space) {
-        return
-      }
 
       // First, let’s see if this is a valid closing fence.
       // Skip trailing white space

@@ -186,11 +186,6 @@ test('remark-fenced-divs', function (t) {
     'fencedDiv block self-closes at the end of document'
   )
   t.deepEqual(
-    String(toHtml.processSync('::: my-div\nThis is a paragraph.\n\nmust  :::')),
-    '<div class="my-div"><p>This is a paragraph.</p><p>must</p></div>',
-    'TODO the closing fence should be at the beginning of the line ...should include values before the closing fence (except for spacing #1)'
-  )
-  t.deepEqual(
     String(toHtml.processSync('tango\n::: my-div\nThis is a paragraph.\n:::')),
     '<p>tango\n::: my-div\nThis is a paragraph.\n:::</p>',
     'should not support a fencedDiv block right after a paragraph'
@@ -219,6 +214,11 @@ test('remark-fenced-divs', function (t) {
     ),
     '<p>tango</p>\n<div class="my-div"><p>This is a paragraph.</p></div>',
     'the opening fence should be preceeded by a line containing only spaces and tabs'
+  )
+  t.deepEqual(
+    String(toHtml.processSync('::: my-div\nThis is a paragraph.\n\nmust  :::')),
+    '<div class="my-div"><p>This is a paragraph.</p><p>must</p></div>',
+    'TODO the closing fence should be at the beginning of the line ...should include values before the closing fence (except for spacing #1)'
   )
   t.end()
 })
