@@ -39,24 +39,10 @@ function fencedPlugin() {
 function attachParser(parser) {
   const proto = parser.prototype
   const blockMethods = proto.blockMethods
-  const interruptParagraph = proto.interruptParagraph
-  const interruptList = proto.interruptList
-  const interruptBlockquote = proto.interruptBlockquote
 
   proto.blockTokenizers.fencedDiv = fencedDivTokenizer
 
   blockMethods.splice(blockMethods.indexOf('fencedCode') + 1, 0, 'fencedDiv')
-
-  // Inject fencedDiv to interrupt rules
-  interruptParagraph.splice(interruptParagraph.indexOf('fencedCode') + 1, 0, [
-    'fencedDiv'
-  ])
-  interruptList.splice(interruptList.indexOf('fencedCode') + 1, 0, [
-    'fencedDiv'
-  ])
-  interruptBlockquote.splice(interruptBlockquote.indexOf('fencedCode') + 1, 0, [
-    'fencedDiv'
-  ])
 
   function fencedDivTokenizer(eat, value, silent) {
     const length = value.length
