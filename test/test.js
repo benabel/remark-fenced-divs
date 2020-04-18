@@ -5,7 +5,7 @@ const remark2rehype = require('remark-rehype')
 const rehypeStringify = require('rehype-stringify')
 const stringify = require('remark-stringify')
 const u = require('unist-builder')
-const fencedDiv = require('.')
+const fencedDiv = require('..')
 
 test('remark-fenced-divs', function (t) {
   const toHtml = unified()
@@ -50,11 +50,7 @@ test('remark-fenced-divs', function (t) {
     ]),
     'should not support indented closing fencedDiv block'
   )
-  t.deepEqual(
-    String(toHtml.processSync('tango\n::: my-div\nThis is a paragraph.\n:::')),
-    '<p>tango</p>\n<div class="my-div"><p>This is a paragraph.</p></div>',
-    'TODO should not support a fencedDiv block right after a paragraph'
-  )
+
   t.deepEqual(
     String(
       toHtml.processSync(
@@ -187,12 +183,17 @@ test('remark-fenced-divs', function (t) {
   t.deepEqual(
     String(toHtml.processSync('    :::\n    1+1 = 2\n    :::')),
     '<pre><code>:::\n1+1 = 2\n:::\n</code></pre>',
-    'markdown-it-katex#10: …but 4 means a code block'
+    'Should not allow initial spacing: 4 means a code block'
   )
   t.deepEqual(
     String(toHtml.processSync('::: my-div\n1+1 = 2')),
     '<div class="my-div"><p>1+1 = 2</p></div>',
     'fencedDiv block self-closes at the end of document'
+  )
+  t.deepEqual(
+    String(toHtml.processSync('tango\n::: my-div\nThis is a paragraph.\n:::')),
+    '<p>tango</p>\n<div class="my-div"><p>This is a paragraph.</p></div>',
+    'TODO should not support a fencedDiv block right after a paragraph'
   )
   t.end()
 })
