@@ -199,35 +199,30 @@ function attachParser(parser) {
       }
 
       if (isClosingFence) {
-        break
+        content = content.join('\n')
+
+        // TODO Process attributes to get classes, ids and data-attributes
+
+        let node = {
+          type: 'fencedDiv',
+          value: content,
+          data: {
+            hName: 'div',
+            hProperties: {
+              className: attributes
+            }
+          }
+        }
+
+        // Tokenize content of the div
+        node.children = this.tokenizeBlock(content, eat.now())
+
+        return eat(value.slice(0, lineEnd))(node)
       }
 
       index = lineEnd + 1
       lineEnd = value.indexOf(lineFeed, index + 1)
       lineEnd = lineEnd === -1 ? length : lineEnd
-    }
-
-    // Add the div node only if valid
-    if (isClosingFence) {
-      content = content.join('\n')
-
-      // TODO Process attributes to get classes, ids and data-attributes
-
-      let node = {
-        type: 'fencedDiv',
-        value: content,
-        data: {
-          hName: 'div',
-          hProperties: {
-            className: attributes
-          }
-        }
-      }
-
-      // Tokenize content of the div
-      node.children = this.tokenizeBlock(content, eat.now())
-
-      return eat(value.slice(0, lineEnd))(node)
     }
   }
 }
