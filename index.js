@@ -22,9 +22,11 @@ const lineFeed = '\n'
 const delimiterSign = ':'
 
 // https://regex101.com/r/eMLK3W/2
-const openingFenceRegexp = /^:{3,}\s*([^:]+)\s*:*(\n|$)/
+const openingFenceRegexp = /^:{3,}\s*([^\s:]+)\s*:*\s*(\n|$)/
 // https://regex101.com/r/k4yhzU/1
 const closingFenceRegexp = /^:{3,}\s*(\n|$)/
+
+// TODO is this required when eat() is called?
 let lineNb = 0 // Number of lines of the last open root div encountered to pass
 
 function fencedPlugin() {
@@ -45,8 +47,7 @@ function fencedPlugin() {
  */
 function* splitLines(str) {
   let currentLine = ''
-  for (const char of str) {
-    // TODO last line?
+  for (const char of str + lineFeed) {
     if (char !== lineFeed) {
       currentLine += char
     } else {
@@ -55,8 +56,6 @@ function* splitLines(str) {
     }
   }
 }
-
-function isOpeningFence(str) {}
 
 function attachParser(parser) {
   const proto = parser.prototype
@@ -70,9 +69,10 @@ function attachParser(parser) {
     const length = value.length
     let depth = 0
     let lastParsed = 0
-    let content = []
-    let blocks
-    let attributes
+    let content
+    let attribute
+    let node
+    let index = 0
 
     // keep track of lines passed
     lineNb++
@@ -86,26 +86,47 @@ function attachParser(parser) {
 
     // Now we parse the content until we close this root div
     for (let line of splitLines(value)) {
+      index += line.length + 1
       lineNb++
-      console.log(`${lineNb} ${line}`)
+      console.log(line)
       if (line.match(openingFenceRegexp)) {
         depth++
-        attributes = value.match(openingFenceRegexp)[1]
-        console.log('Found opening fence')
-        console.log('Depth:' + depth)
-        console.log('Attributes: ' + attributes)
+        attribute = value.match(openingFenceRegexp)[1]
+        console.log('Found opening fence: ' + attribute)
+        content = []
+
         continue
       }
       if (line.match(closingFenceRegexp)) {
         depth--
-        console.log('Found closing fence')
-        console.log('Depth:' + depth)
+        console.log('Found closing fence: ' + line)
+
         if (depth === 0) {
           lastParsed = lineNb
           if (silent) return true
-          return
+
+          content = content.join('\n')
+
+          // TODO Process attributes to get classes, ids and data-attributes
+
+          node = {
+            type: 'fencedDiv',
+            value: content,
+            data: {
+              hName: 'div',
+              hProperties: {
+                className: attribute
+              }
+            }
+          }
+
+          // Tokenize content of the div
+          node.children = this.tokenizeBlock(content, eat.now())
+
+          return eat(value.slice(0, index))(node)
         }
       }
+      content.push(line)
     }
   }
 }
