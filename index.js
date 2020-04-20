@@ -21,7 +21,11 @@ const space = ' '
 const lineFeed = '\n'
 const delimiterSign = ':'
 
-const minFenceCount = 3
+// https://regex101.com/r/eMLK3W/2
+const openingFenceRegexp = /^:{3,}\s*([^:]+)\s*:*(\n|$)/
+// https://regex101.com/r/k4yhzU/1
+const closingFenceRegexp = /^:{3,}\s*(\n|$)/
+let lineNb = 0 // Number of lines of the last open root div encountered to pass
 
 function fencedPlugin() {
   const parser = this.Parser
@@ -36,6 +40,24 @@ function fencedPlugin() {
   }
 }
 
+/**
+ * Returns an iterable over lines of string
+ */
+function* splitLines(str) {
+  let currentLine = ''
+  for (const char of str) {
+    // TODO last line?
+    if (char !== lineFeed) {
+      currentLine += char
+    } else {
+      yield currentLine
+      currentLine = ''
+    }
+  }
+}
+
+function isOpeningFence(str) {}
+
 function attachParser(parser) {
   const proto = parser.prototype
   const blockMethods = proto.blockMethods
@@ -46,166 +68,44 @@ function attachParser(parser) {
 
   function fencedDivTokenizer(eat, value, silent) {
     const length = value.length
-    let index = 0
-    let content
-    let lineEnd
-    let lineIndex
-    let openingFenceSize
-    let openingFenceContentStart
-    let isClosingFence
-    let closingFenceSize
-    let lineContentStart
-    let lineContentEnd
-    let attributes = ''
-    // Don't allow initial spacing.
-    if (value.charAt(index) === space) {
+    let depth = 0
+    let lastParsed = 0
+    let content = []
+    let blocks
+    let attributes
+
+    // keep track of lines passed
+    lineNb++
+    // Pass if this is not an opening fence
+    // or if this as already been parsed
+    if (!value.match(openingFenceRegexp) && lineNb > lastParsed) {
       return
     }
+    // Will be incremented in the for of loop
+    lineNb--
 
-    // Skip the fence.
-    while (index < length && value.charAt(index) === delimiterSign) {
-      index++
-    }
-
-    openingFenceSize = index
-
-    // Exit if there is not enough of a fence.
-    if (openingFenceSize < minFenceCount) {
-      return
-    }
-    // Skip spacing before the attributes.
-    while (index < length && value.charAt(index) === space) {
-      index++
-    }
-    // Don't allow empty attribute
-    if (
-      value.charAt(index) === lineFeed ||
-      value.charAt(index) === delimiterSign
-    ) {
-      return
-    }
-    // Capture attributes
-    while (
-      index < length &&
-      !(
-        value.charAt(index) === space ||
-        value.charAt(index) === delimiterSign ||
-        value.charAt(index) === lineFeed
-      )
-    ) {
-      attributes += value.charAt(index)
-      index++
-    }
-    // Skip spacing and delimiters after the attributes.
-    while (index < length && value.charAt(index) === space) {
-      index++
-    }
-    while (index < length && value.charAt(index) === delimiterSign) {
-      index++
-    }
-    while (index < length && value.charAt(index) === space) {
-      index++
-    }
-    if (value.charAt(index) !== lineFeed) {
-      return
-    }
-
-    openingFenceContentStart = index
-
-    // Eat everything after the fence.
-    while (index < length) {
-      if (value.charAt(index) === lineFeed) {
-        break
+    // Now we parse the content until we close this root div
+    for (let line of splitLines(value)) {
+      lineNb++
+      console.log(`${lineNb} ${line}`)
+      if (line.match(openingFenceRegexp)) {
+        depth++
+        attributes = value.match(openingFenceRegexp)[1]
+        console.log('Found opening fence')
+        console.log('Depth:' + depth)
+        console.log('Attributes: ' + attributes)
+        continue
       }
-      index++
-    }
-
-    if (silent) {
-      return true
-    }
-
-    content = []
-
-    if (openingFenceContentStart !== index) {
-      content.push(value.slice(openingFenceContentStart, index))
-    }
-
-    index++
-    lineEnd = value.indexOf(lineFeed, index + 1)
-    lineEnd = lineEnd === -1 ? length : lineEnd
-
-    while (index < length) {
-      isClosingFence = false
-      lineContentStart = index
-      lineContentEnd = lineEnd
-      lineIndex = lineEnd
-      closingFenceSize = 0
-
-      // First, let’s see if this is a valid closing fence.
-      // Skip trailing white space
-      while (
-        lineIndex > lineContentStart &&
-        value.charAt(lineIndex - 1) === space
-      ) {
-        lineIndex--
-      }
-
-      // Skip the fence.
-      while (
-        lineIndex > lineContentStart &&
-        value.charAt(lineIndex - 1) === delimiterSign
-      ) {
-        closingFenceSize++
-        lineIndex--
-      }
-
-      // Check if this is a valid closing fence line.
-      if (
-        closingFenceSize >= minFenceCount &&
-        value.indexOf(delimiterSign, lineContentStart) === lineIndex &&
-        value.charAt(lineIndex - 1) === lineFeed
-      ) {
-        isClosingFence = true
-        lineContentEnd = lineIndex
-      }
-
-      // If this is a closing fence, skip final spacing.
-      if (isClosingFence) {
-        while (
-          lineContentEnd > lineContentStart &&
-          value.charAt(lineContentEnd - 1) === space
-        ) {
-          lineContentEnd--
+      if (line.match(closingFenceRegexp)) {
+        depth--
+        console.log('Found closing fence')
+        console.log('Depth:' + depth)
+        if (depth === 0) {
+          lastParsed = lineNb
+          if (silent) return true
+          return
         }
       }
-
-      content.push(value.slice(lineContentStart, lineContentEnd))
-
-      if (isClosingFence) {
-        content = content.join('\n')
-
-        // TODO Process attributes to get classes, ids and data-attributes
-
-        let node = {
-          type: 'fencedDiv',
-          value: content,
-          data: {
-            hName: 'div',
-            hProperties: {
-              className: attributes
-            }
-          }
-        }
-
-        // Tokenize content of the div
-        node.children = this.tokenizeBlock(content, eat.now())
-
-        return eat(value.slice(0, lineEnd))(node)
-      }
-
-      index = lineEnd + 1
-      lineEnd = value.indexOf(lineFeed, index + 1)
-      lineEnd = lineEnd === -1 ? length : lineEnd
     }
   }
 }
