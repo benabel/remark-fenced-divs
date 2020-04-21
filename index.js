@@ -169,8 +169,14 @@ function attachCompiler(compiler) {
 
   proto.visitors.fencedDiv = compileFencedDiv
 
+  /**
+   * Convert an mdast node to markdown
+   *
+   * @param {*} node
+   * @returns String
+   */
   function compileFencedDiv(node) {
-    // TODO what is this?
-    return `${delimiterSign}${delimiterSign}\n${node.value}\n${delimiterSign}${delimiterSign}`
+    const className = node.data.hProperties.className
+    return `\n\n${delimiterSign}${delimiterSign}${delimiterSign}${space}${className}\n${node.value}\n${delimiterSign}${delimiterSign}${delimiterSign}\n\n`
   }
 }
