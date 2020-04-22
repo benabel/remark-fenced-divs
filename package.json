@@ -50,7 +50,7 @@
     "start": "onchange -i 'index.js' 'test/test*.js' -- yarn test",
     "test": "tape ./test/*.js | tap-spec",
     "test:e2e": "npm-run-all test:e2e:* && prettier --write test/e2e/*.html",
-    "test:e2e:pandoc": "pandoc -f markdown-auto_identifiers test/e2e/test.md -o test/e2e/test-pandoc.html",
+    "test:e2e:pandoc": "pandoc -f markdown-auto_identifiers-smart test/e2e/test.md -o test/e2e/test-pandoc.html",
     "test:e2e:remark": "cd test/e2e/ && node test-e2e"
   },
   "prettier": {

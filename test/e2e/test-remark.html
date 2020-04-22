@@ -2,21 +2,20 @@
   <p>Don't need empty line if div at the beginning of the file.</p>
 </div>
 <h2>id and class</h2>
-<div class="{#special">
-  <p>Here is a paragraph.</p>
-  <p>And another.</p>
-</div>
+<p>::::: {#special .sidebar}</p>
+<p>Here is a paragraph.</p>
+<p>And another.</p>
+<p>:::::</p>
 <h2>keyword attributes</h2>
-<div class="{.class">
-  <p>Here is a paragraph.</p>
-  <p>And another.</p>
-</div>
+<p>::::: {.class key="val"}</p>
+<p>Here is a paragraph.</p>
+<p>And another.</p>
+<p>:::::</p>
 <h2>nested</h2>
 <div class="Warning">
   <p>This is a warning.</p>
-  <p>::: Danger This is a warning within a warning.</p>
+  <div class="Danger"><p>This is a warning within a warning.</p></div>
 </div>
-<p>::::::::::::::::::</p>
 <h2>divs shouldn't be indented</h2>
 <p>::::: {#special .sidebar}</p>
 <p>Here is a paragraph.</p>
