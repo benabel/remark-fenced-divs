@@ -16,7 +16,7 @@ And another.
 
 ## keyword attributes
 
-::::: {.class key="val"}
+::::: {.class-1 .class-2 #id1 #id2 key1="val" key-2=2 KEY3=true}
 
 Here is a paragraph.
 

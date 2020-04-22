@@ -35,9 +35,8 @@ function isRemarkCompiler(compiler) {
 const space = ' '
 const lineFeed = '\n'
 const delimiterSign = ':'
+const minFenceCount = 3
 
-// https://regex101.com/r/eMLK3W/2
-const openingFenceRegexp = /^:{3,}\s*([^\s:]+)\s*:*\s*(\n|$)/
 // https://regex101.com/r/k4yhzU/1
 const closingFenceRegexp = /^:{3,}\s*(\n|$)/
 
@@ -72,6 +71,81 @@ function* splitLines(str) {
   }
 }
 
+/**
+ * Catch if string starts with a valid opening fence
+ *
+ * if it is return the attribute(s) trimmed
+ *
+ * TODO what happens if attribute is '0' or 'false'
+ *
+ * if not return empty string
+ *
+ * @param {String} value
+ * @returns String
+ */
+function getOpeningFenceAttribute(value) {
+  let index = 0
+  let length = value.length
+  let openingFenceSize
+  let attributeBegin
+  let attributeEnd
+
+  // Don't allow initial spacing.
+  if (value.charAt(index) === space) {
+    return false
+  }
+
+  // Skip the fence.
+  while (index < length && value.charAt(index) === delimiterSign) {
+    index++
+  }
+
+  openingFenceSize = index
+
+  // Exit if there is not enough of a fence.
+  if (openingFenceSize < minFenceCount) {
+    return false
+  }
+  // Skip spacing before the attributes.
+  while (index < length && value.charAt(index) === space) {
+    index++
+  }
+  // Don't allow empty attribute
+  if (
+    value.charAt(index) === lineFeed ||
+    value.charAt(index) === delimiterSign
+  ) {
+    return false
+  }
+  attributeBegin = index
+  // Capture attributes
+  attributeEnd = value.indexOf(lineFeed, attributeBegin)
+  attributeEnd =
+    value.indexOf(lineFeed) === -1 ? length : attributeEnd + attributeBegin
+  while (
+    attributeEnd > attributeBegin &&
+    value.charAt(attributeEnd - 1) === space
+  ) {
+    attributeEnd--
+  }
+  while (
+    attributeEnd > attributeBegin &&
+    value.charAt(attributeEnd - 1) === delimiterSign
+  ) {
+    attributeEnd--
+  }
+  while (
+    attributeEnd > attributeBegin &&
+    value.charAt(attributeEnd - 1) === space
+  ) {
+    attributeEnd--
+  }
+  if (attributeEnd > attributeBegin) {
+    return value.slice(attributeBegin, attributeEnd)
+  }
+  return false
+}
+
 function attachParser(parser) {
   const proto = parser.prototype
   const blockMethods = proto.blockMethods
@@ -85,9 +159,13 @@ function attachParser(parser) {
     let depth = 0
     let lastParsed = 0
     let content = []
-    let attribute
+    let attributes
     let node
+    let classList
     let blocks = []
+    let id
+    let meta
+    let dataset = {}
     // to get indexes to eat TODO is this necessary?
     let index = 0
 
@@ -95,19 +173,21 @@ function attachParser(parser) {
     lineNb++
     // Pass if this is not an opening fence
     // or if this as already been parsed
-    if (!value.match(openingFenceRegexp) && lineNb > lastParsed) {
+    if (!getOpeningFenceAttribute(value) && lineNb > lastParsed) {
       return
     }
     // Will be incremented in the for of loop
     lineNb--
 
     // Now we parse the content until we close this root div
+    // TODO don't need to parse first line
     for (let line of splitLines(value)) {
       index += line.length + 1
       lineNb++
-      if (line.match(openingFenceRegexp)) {
+      attributes = getOpeningFenceAttribute(line)
+
+      if (Boolean(attributes)) {
         depth++
-        attribute = line.match(openingFenceRegexp)[1]
         // Add current content to parent
         if (content.length > 0) {
           content = content.join(lineFeed)
@@ -119,17 +199,50 @@ function attachParser(parser) {
           content = []
         }
 
-        // TODO Process attributes to get classes, ids and data-attributes
+        // Process attributes
+        // Get classes, ids and data-attributes
+        if (attributes.startsWith('{')) {
+          meta = attributes.slice(1, attributes.length - 1)
+          attributes = meta.split(space)
+          classList = attributes
+            .filter((attr) => attr.startsWith('.'))
+            .map((e) => e.slice(1, e.length))
+          id = attributes.find((attr) => attr.startsWith('#'))
+          dataset = {}
+          for (const attr of attributes) {
+            let keyVal = attr.split('=')
+            if (keyVal.length === 2) {
+              dataset[keyVal[0]] = String(keyVal[1])
+            }
+          }
+        } else {
+          classList = [attributes]
+          meta = attributes
+        }
+
         node = {
           type: 'fencedDiv',
+          meta: meta,
           value: '',
           data: {
             hName: 'div',
-            hProperties: {
-              className: attribute
-            }
+            hProperties: {}
           },
           children: []
+        }
+        if (id) {
+          node.data.hProperties.id = id.slice(1, id.length)
+          id = null
+        }
+
+        if (classList.length > 0) {
+          node.data.hProperties.className = classList
+          classList = null
+        }
+        if (Object.keys(dataset).length > 0) {
+          for (let [key, value] of Object.entries(dataset)) {
+            node.data.hProperties[`data-${key}`] = value
+          }
         }
 
         blocks.push(node)

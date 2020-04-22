@@ -232,11 +232,70 @@ test('remark-fenced-divs', function (t) {
   t.deepEqual(
     String(
       toHtml.processSync(
-        '::: Warning ::::::\nThis is a warning.\n\n::: Danger\nThis is a warning within a warning.\n:::\n\n\n::::::::::::::::::'
+        `::::: {.my-class-1 .my-class-2 #my-id key1=val1 key2=2}
+
+Here is a paragraph.
+
+
+
+And another.
+
+:::::`
       )
     ),
-    '<div class="Warning"><p>This is a warning.</p><div class="Danger"><p>This is a warning within a warning.</p></div></div>',
-    'should allow nested divs'
+    '<div id="my-id" class="my-class-1 my-class-2" data-key1="val1" data-key2="2"><p>Here is a paragraph.</p><p>And another.</p></div>',
+    'should support extended attributes'
+  )
+  t.deepEqual(
+    String(
+      toHtml.processSync(
+        `::::: {#my-id}
+
+Here is a paragraph.
+
+
+
+And another.
+
+:::::`
+      )
+    ),
+    '<div id="my-id"><p>Here is a paragraph.</p><p>And another.</p></div>',
+    'should support extended attributes with only one id'
+  )
+  t.deepEqual(
+    String(
+      toHtml.processSync(
+        `::::: {.my-class}
+
+Here is a paragraph.
+
+
+
+And another.
+
+:::::`
+      )
+    ),
+    '<div class="my-class"><p>Here is a paragraph.</p><p>And another.</p></div>',
+    'should support extended attributes with only one class'
+  )
+  t.deepEqual(
+    String(
+      toHtml.processSync(
+        `::::: {selected=selected percent=50}
+
+Here is a paragraph.
+
+
+
+And another.
+
+:::::`
+      )
+    ),
+    '<div data-selected="selected" data-percent="50"><p>Here is a paragraph.</p><p>And another.</p></div>',
+    'should support extended attributes with only key vals data'
   )
   t.end()
 })
