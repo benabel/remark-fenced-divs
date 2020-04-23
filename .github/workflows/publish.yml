@@ -36,5 +36,5 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-        - run: yarn publish
+        run: yarn publish
         
