@@ -1,6 +1,6 @@
 {
   "name": "remark-fenced-divs",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "remark plugin to enable pandoc fenced_divs",
   "license": "MIT",
   "keywords": [
