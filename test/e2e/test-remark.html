@@ -1,33 +1,19 @@
-<div class="my-div">
-  <p>Don't need empty line if div at the beginning of the file.</p>
-</div>
+<div class="my-div"><p>Don't need empty line if div at the beginning of the file.</p></div>
 <h2>id and class</h2>
-<div id="special" class="sidebar">
-  <p>Here is a paragraph.</p>
-  <p>And another.</p>
-</div>
+<div id="special" class="sidebar"><p>Here is a paragraph.</p><p>And another.</p></div>
 <h2>keyword attributes</h2>
-<div id="id1" class="class-1 class-2" data-key1="&#x22;val&#x22;" data-key-2="2" data-KEY3="true">
-  <p>Here is a paragraph.</p>
-  <p>And another.</p>
-</div>
+<div id="id1" class="class-1 class-2" data-key1="&#x22;val&#x22;" data-key-2="2" data-KEY3="true"><p>Here is a paragraph.</p><p>And another.</p></div>
 <h2>nested</h2>
-<div class="Warning">
-  <p>This is a warning.</p>
-  <div class="Danger">
-    <p>This is a warning within a warning.</p>
-  </div>
-</div>
+<div class="Warning"><p>This is a warning.</p><div class="Danger"><p>This is a warning within a warning.</p></div></div>
 <h2>divs shouldn't be indented</h2>
-<p>::::: {#special .sidebar}</p>
-<p>Here is a paragraph.</p>
-<p>And another.</p>
-<p>:::::</p>
+<p>  ::::: {#special .sidebar}</p>
+<p>  Here is a paragraph.</p>
+<p>  And another.</p>
+<p>  :::::</p>
 <h2>should be surrounded with blank lines</h2>
 <p>Bonjour</p>
-<div class="Warning">
-  <p>This is a warning.</p>
-</div>
+<div class="Warning"><p>This is a warning.</p></div>
 <p>Aurevoir</p>
 <h2>Don't auto close at end of file</h2>
-<p>::: Warning :::::: This is a warning.</p>
+<p>::: Warning ::::::
+This is a warning.</p>
