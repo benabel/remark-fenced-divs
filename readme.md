@@ -4,6 +4,40 @@ Fenced divs are some kind of generic syntax for block contents with a syntax
 similar to fenced code blocks but using a 3 colons `:::` as delimiter instead of
 \`\`\`.
 
+It allows a simple word used as a `class` in html:
+
+```md
+::: my-class
+This is a paragraph.
+:::
+```
+
+Will be rendered in `html` as:
+
+```html
+<div class="my-div">
+    <p>This is a paragraph.</p>
+</div>
+```
+
+Or extended attributes syntax in curly braces:
+
+```md
+::: {#navbar .container .right key=1 key2="value 2"}
+This is a paragraph.
+:::
+```
+
+Will be rendered in `html` as:
+
+```html
+<div id="navbar" class="container right" data-key1="1" data-key2="value 2">
+    <p>This is a paragraph.</p>
+</div>
+```
+
+## Syntax details
+
 From `pandoc` reference: <https://pandoc.org/MANUAL.html#extension-fenced_divs>
 
 *   [x] A Div must start at the beginning of a line: it mustn't be indented.
@@ -11,7 +45,7 @@ From `pandoc` reference: <https://pandoc.org/MANUAL.html#extension-fenced_divs>
     plus some attributes.
 *   [x] The attributes may optionally be followed by another string of
     consecutive colons.
-*   [ ] The attribute syntax is exactly as in fenced code blocks (see Extension:
+*   [x] The attribute syntax is exactly as in fenced code blocks (see Extension:
         fenced_code_attributes). As with fenced code blocks, one can use either
         attributes in curly braces or
 *   [x] a single unbraced word, which will be treated as a class name.
@@ -19,7 +53,7 @@ From `pandoc` reference: <https://pandoc.org/MANUAL.html#extension-fenced_divs>
     three consecutive colons at the beginning of the line.
 *   The fenced Div should be separated by blank lines:
 *   [x] from preceding 
-*   [ ] and following blocks.
+*   [x] and following blocks.
 *   [x] The fenced Div can be nested.
 
 ## Acknowledgments
