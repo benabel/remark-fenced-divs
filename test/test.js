@@ -297,5 +297,16 @@ And another.
     '<div data-selected="selected" data-percent="50"><p>Here is a paragraph.</p><p>And another.</p></div>',
     'should support extended attributes with only key vals data'
   )
+  t.deepEqual(
+    String(
+      toHtml.processSync(
+        `::::: {key1="val" key2='val2' key3=val3}
+Here is a paragraph.
+:::::`
+      )
+    ),
+    '<div data-key1="val" data-key2="val2" data-key3="val3"><p>Here is a paragraph.</p></div>',
+    'should support extended attributes with quoted strings as vals data'
+  )
   t.end()
 })

@@ -37,6 +37,8 @@ const lineFeed = '\n'
 const delimiterSign = ':'
 const minFenceCount = 3
 
+const quoteRegex = /('|")/g
+
 // https://regex101.com/r/k4yhzU/1
 const closingFenceRegexp = /^:{3,}\s*(\n|$)/
 
@@ -212,7 +214,7 @@ function attachParser(parser) {
           for (const attr of attributes) {
             let keyVal = attr.split('=')
             if (keyVal.length === 2) {
-              dataset[keyVal[0]] = String(keyVal[1])
+              dataset[keyVal[0]] = keyVal[1]
             }
           }
         } else {
@@ -241,6 +243,10 @@ function attachParser(parser) {
         }
         if (Object.keys(dataset).length > 0) {
           for (let [key, value] of Object.entries(dataset)) {
+            // unquote string
+            // in fact data attributes should follow the production rule of XML names
+            // https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/data-*
+            value = value.replace(quoteRegex, '')
             node.data.hProperties[`data-${key}`] = value
           }
         }

@@ -26,6 +26,12 @@ And another.
 
 :::::
 
+## keyword attributes with quoted string values
+
+::::: {key1="val" key2='val2' key3=val3}
+Here is a paragraph.
+:::::
+
 ## nested
 
 ::: Warning ::::::
