@@ -8,8 +8,6 @@ Don't need empty line if div at the beginning of the file.
 
 Here is a paragraph.
 
-
-
 And another.
 
 :::::
@@ -20,8 +18,6 @@ And another.
 
 Here is a paragraph.
 
-
-
 And another.
 
 :::::
@@ -31,6 +27,12 @@ And another.
 ::::: {key1="val" key2='val2' key3=val3}
 Here is a paragraph.
 :::::
+
+## keyword attributes with quoted string values including spaces
+
+::: {.plus titre="Comment appliquer des changements rapidement?"}
+Here is a paragraph.
+:::
 
 ## nested
 
@@ -44,16 +46,13 @@ This is a warning within a warning.
 
 ## divs shouldn't be indented
 
-  ::::: {#special .sidebar}
-  
-  Here is a paragraph.
-  
-  
-  
-  And another.
-  
-  :::::
+::::: {#special .sidebar}
 
+Here is a paragraph.
+
+And another.
+
+:::::
 
 ## should be surrounded with blank lines
 

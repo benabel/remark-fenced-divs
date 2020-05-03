@@ -163,7 +163,7 @@ function attachParser(parser) {
     let content = []
     let attributes
     let node
-    let classList
+    let classList = []
     let blocks = []
     let id
     let meta
@@ -205,17 +205,54 @@ function attachParser(parser) {
         // Get classes, ids and data-attributes
         if (attributes.startsWith('{')) {
           meta = attributes.slice(1, attributes.length - 1)
-          attributes = meta.split(space)
-          classList = attributes
-            .filter((attr) => attr.startsWith('.'))
-            .map((e) => e.slice(1, e.length))
-          id = attributes.find((attr) => attr.startsWith('#'))
+          // helper to treat key-vals at the end as others
+          meta = meta + space
+
+          let i = 0
+          let iEnd = meta.length
           dataset = {}
-          for (const attr of attributes) {
-            let keyVal = attr.split('=')
-            if (keyVal.length === 2) {
-              dataset[keyVal[0]] = keyVal[1]
+
+          while (i < meta.length - 1) {
+            const char = meta.charAt(i)
+            switch (char) {
+              // skip space
+              case space:
+                i++
+                continue
+              // eat classes
+              case '.':
+                i++
+                iEnd = meta.indexOf(space, i)
+                classList.push(meta.slice(i, iEnd))
+                i = iEnd + 1
+                continue
+              // eat id(just take last as pandoc)
+              case '#':
+                i++
+                iEnd = meta.indexOf(space, i)
+                id = meta.slice(i, iEnd)
+                i = iEnd + 1
+                continue
+              // This should be a key-val pair
+              default:
+                let keyVal = []
+                iEnd = meta.indexOf('=', i)
+                keyVal.push(meta.slice(i, iEnd))
+                i = iEnd + 1
+                const quote = meta.charAt(i)
+                if (quote === "'" || quote === '"') {
+                  i++
+                  iEnd = meta.indexOf(quote, i)
+                  keyVal[1] = meta.slice(i, iEnd)
+                } else {
+                  iEnd = meta.indexOf(space, i)
+                  keyVal.push(meta.slice(i, iEnd))
+                }
+                dataset[keyVal[0]] = keyVal[1]
+                i = iEnd + 1
+                continue
             }
+            i++
           }
         } else {
           classList = [attributes]
@@ -224,7 +261,7 @@ function attachParser(parser) {
 
         node = {
           type: 'fencedDiv',
-          meta: meta,
+          meta: meta.trim(),
           value: '',
           data: {
             hName: 'div',
@@ -233,7 +270,7 @@ function attachParser(parser) {
           children: []
         }
         if (id) {
-          node.data.hProperties.id = id.slice(1, id.length)
+          node.data.hProperties.id = id
           id = null
         }
 

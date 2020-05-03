@@ -308,5 +308,27 @@ Here is a paragraph.
     '<div data-key1="val" data-key2="val2" data-key3="val3"><p>Here is a paragraph.</p></div>',
     'should support extended attributes with quoted strings as vals data'
   )
+  t.equal(
+    String(
+      toHtml.processSync(
+        `::::: {.plus titre="Comment appliquer des changements rapidement?"}
+Here is a paragraph.
+:::::`
+      )
+    ),
+    '<div class="plus" data-titre="Comment appliquer des changements rapidement?"><p>Here is a paragraph.</p></div>',
+    'should support extended attributes with double quoted strings including spaces as data'
+  )
+  t.equal(
+    String(
+      toHtml.processSync(
+        `::::: {.plus titre='Comment appliquer des changements rapidement?'}
+Here is a paragraph.
+:::::`
+      )
+    ),
+    '<div class="plus" data-titre="Comment appliquer des changements rapidement?"><p>Here is a paragraph.</p></div>',
+    'should support extended attributes with single quoted strings including spaces as data'
+  )
   t.end()
 })
