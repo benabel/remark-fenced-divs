@@ -34,6 +34,16 @@ Here is a paragraph.
 Here is a paragraph.
 :::
 
+## keyword attributes with quoted string values including quotes
+
+::::: {.plus titre="L'algorithme est-il efficace?"}
+Here is a paragraph.
+:::::
+
+::::: {.plus titre='"Bonjour"'}
+Here is a paragraph.
+:::::
+
 ## nested
 
 ::: Warning ::::::

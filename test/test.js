@@ -50,7 +50,6 @@ test('remark-fenced-divs', function (t) {
     ]),
     'should not support indented closing fencedDiv block'
   )
-
   t.deepEqual(
     String(
       toHtml.processSync(
@@ -329,6 +328,28 @@ Here is a paragraph.
     ),
     '<div class="plus" data-titre="Comment appliquer des changements rapidement?"><p>Here is a paragraph.</p></div>',
     'should support extended attributes with single quoted strings including spaces as data'
+  )
+  t.equal(
+    String(
+      toHtml.processSync(
+        `::::: {.plus titre="L'algorithme est-il efficace?"}
+Here is a paragraph.
+:::::`
+      )
+    ),
+    '<div class="plus" data-titre="L&#x27;algorithme est-il efficace?"><p>Here is a paragraph.</p></div>',
+    'should support extended attributes with single quoted strings including single quotes as data'
+  )
+  t.equal(
+    String(
+      toHtml.processSync(
+        `::::: {.plus titre='"Bonjour"'}
+Here is a paragraph.
+:::::`
+      )
+    ),
+    '<div class="plus" data-titre="&#x22;Bonjour&#x22;"><p>Here is a paragraph.</p></div>',
+    'should support extended attributes with single quoted strings including single quotes as data'
   )
   t.end()
 })

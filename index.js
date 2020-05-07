@@ -243,11 +243,10 @@ function attachParser(parser) {
                 if (quote === "'" || quote === '"') {
                   i++
                   iEnd = meta.indexOf(quote, i)
-                  keyVal[1] = meta.slice(i, iEnd)
                 } else {
                   iEnd = meta.indexOf(space, i)
-                  keyVal.push(meta.slice(i, iEnd))
                 }
+                keyVal.push(meta.slice(i, iEnd))
                 dataset[keyVal[0]] = keyVal[1]
                 i = iEnd + 1
                 continue
@@ -280,10 +279,8 @@ function attachParser(parser) {
         }
         if (Object.keys(dataset).length > 0) {
           for (let [key, value] of Object.entries(dataset)) {
-            // unquote string
-            // in fact data attributes should follow the production rule of XML names
+            // data attributes should follow the production rule of XML names
             // https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/data-*
-            value = value.replace(quoteRegex, '')
             node.data.hProperties[`data-${key}`] = value
           }
         }
