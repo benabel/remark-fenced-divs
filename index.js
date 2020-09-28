@@ -37,8 +37,6 @@ const lineFeed = '\n'
 const delimiterSign = ':'
 const minFenceCount = 3
 
-const quoteRegex = /('|")/g
-
 // https://regex101.com/r/k4yhzU/1
 const closingFenceRegexp = /^:{3,}\s*(\n|$)/
 
@@ -61,9 +59,9 @@ function fencedPlugin() {
 /**
  * Returns an iterable over lines of string
  */
-function* splitLines(str) {
+function* splitLines(string) {
   let currentLine = ''
-  for (const char of str + lineFeed) {
+  for (const char of string + lineFeed) {
     if (char !== lineFeed) {
       currentLine += char
     } else {
@@ -108,10 +106,12 @@ function getOpeningFenceAttribute(value) {
   if (openingFenceSize < minFenceCount) {
     return false
   }
+
   // Skip spacing before the attributes.
   while (index < length && value.charAt(index) === space) {
     index++
   }
+
   // Don't allow empty attribute
   if (
     value.charAt(index) === lineFeed ||
@@ -119,6 +119,7 @@ function getOpeningFenceAttribute(value) {
   ) {
     return false
   }
+
   attributeBegin = index
   // Capture attributes
   attributeEnd = value.indexOf(lineFeed, attributeBegin)
@@ -130,21 +131,25 @@ function getOpeningFenceAttribute(value) {
   ) {
     attributeEnd--
   }
+
   while (
     attributeEnd > attributeBegin &&
     value.charAt(attributeEnd - 1) === delimiterSign
   ) {
     attributeEnd--
   }
+
   while (
     attributeEnd > attributeBegin &&
     value.charAt(attributeEnd - 1) === space
   ) {
     attributeEnd--
   }
+
   if (attributeEnd > attributeBegin) {
     return value.slice(attributeBegin, attributeEnd)
   }
+
   return false
 }
 
@@ -157,7 +162,6 @@ function attachParser(parser) {
   blockMethods.splice(blockMethods.indexOf('fencedCode') + 1, 0, 'fencedDiv')
 
   function fencedDivTokenizer(eat, value, silent) {
-    const length = value.length
     let depth = 0
     let lastParsed = 0
     let content = []
@@ -168,16 +172,17 @@ function attachParser(parser) {
     let id
     let meta
     let dataset = {}
-    // to get indexes to eat TODO is this necessary?
+    // To get indexes to eat TODO is this necessary?
     let index = 0
 
-    // keep track of lines passed
+    // Keep track of lines passed
     lineNb++
     // Pass if this is not an opening fence
     // or if this as already been parsed
     if (!getOpeningFenceAttribute(value) && lineNb > lastParsed) {
       return
     }
+
     // Will be incremented in the for of loop
     lineNb--
 
@@ -188,7 +193,7 @@ function attachParser(parser) {
       lineNb++
       attributes = getOpeningFenceAttribute(line)
 
-      if (Boolean(attributes)) {
+      if (attributes) {
         depth++
         // Add current content to parent
         if (content.length > 0) {
@@ -204,9 +209,9 @@ function attachParser(parser) {
         // Process attributes
         // Get classes, ids and data-attributes
         if (attributes.startsWith('{')) {
-          meta = attributes.slice(1, attributes.length - 1)
-          // helper to treat key-vals at the end as others
-          meta = meta + space
+          meta = attributes.slice(1, -1)
+          // Helper to treat key-vals at the end as others
+          meta += space
 
           let i = 0
           let iEnd = meta.length
@@ -215,18 +220,18 @@ function attachParser(parser) {
           while (i < meta.length - 1) {
             const char = meta.charAt(i)
             switch (char) {
-              // skip space
+              // Skip space
               case space:
                 i++
                 continue
-              // eat classes
+              // Eat classes
               case '.':
                 i++
                 iEnd = meta.indexOf(space, i)
                 classList.push(meta.slice(i, iEnd))
                 i = iEnd + 1
                 continue
-              // eat id(just take last as pandoc)
+              // Eat id(just take last as pandoc)
               case '#':
                 i++
                 iEnd = meta.indexOf(space, i)
@@ -235,9 +240,9 @@ function attachParser(parser) {
                 continue
               // This should be a key-val pair
               default:
-                let keyVal = []
+                let keyValue = []
                 iEnd = meta.indexOf('=', i)
-                keyVal.push(meta.slice(i, iEnd))
+                keyValue.push(meta.slice(i, iEnd))
                 i = iEnd + 1
                 const quote = meta.charAt(i)
                 if (quote === "'" || quote === '"') {
@@ -246,11 +251,13 @@ function attachParser(parser) {
                 } else {
                   iEnd = meta.indexOf(space, i)
                 }
-                keyVal.push(meta.slice(i, iEnd))
-                dataset[keyVal[0]] = keyVal[1]
+
+                keyValue.push(meta.slice(i, iEnd))
+                dataset[keyValue[0]] = keyValue[1]
                 i = iEnd + 1
                 continue
             }
+
             i++
           }
         } else {
@@ -277,9 +284,10 @@ function attachParser(parser) {
           node.data.hProperties.className = classList
           classList = null
         }
+
         if (Object.keys(dataset).length > 0) {
           for (let [key, value] of Object.entries(dataset)) {
-            // data attributes should follow the production rule of XML names
+            // Data attributes should follow the production rule of XML names
             // https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/data-*
             node.data.hProperties[`data-${key}`] = value
           }
@@ -289,6 +297,7 @@ function attachParser(parser) {
 
         continue
       }
+
       if (line.match(closingFenceRegexp)) {
         depth--
         node = blocks.pop()
@@ -312,6 +321,7 @@ function attachParser(parser) {
 
         continue
       }
+
       content.push(line)
     }
   }

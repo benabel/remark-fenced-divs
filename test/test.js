@@ -3,7 +3,6 @@ const unified = require('unified')
 const parse = require('remark-parse')
 const remark2rehype = require('remark-rehype')
 const rehypeStringify = require('rehype-stringify')
-const stringify = require('remark-stringify')
 const u = require('unist-builder')
 const fencedDiv = require('..')
 
