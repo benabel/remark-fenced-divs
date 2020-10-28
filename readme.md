@@ -1,5 +1,13 @@
 # remark-fenced-divs
 
+## Note!
+
+This plugin isn't ready for the new parser in remark
+([`remarkjs/remark#536`](https://github.com/remarkjs/remark/pull/536)).
+**You need to use remark version lesser than 13.**
+
+## Getting started
+
 Fenced divs are some kind of generic syntax for block contents with a syntax
 similar to fenced code blocks but using a 3 colons `:::` as delimiter instead of
 \`\`\`.
