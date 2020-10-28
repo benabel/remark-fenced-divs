@@ -42,6 +42,9 @@
     "vfile-reporter": "^6.0.1",
     "xo": "^0.33.1"
   },
+  "peerDependencies": {
+    "remark": "<13"
+  },
   "scripts": {
     "format": "remark . -qfo && prettier --write \"**/*.js\" && xo --fix",
     "start": "onchange -i 'index.js' 'test/test*.js' -- yarn test",
