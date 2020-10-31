@@ -10,13 +10,9 @@ function createName(effects, ok, nok, nameType) {
   return start
 
   function start(code) {
-    if (asciiAlpha(code)) {
-      effects.enter(nameType)
-      effects.consume(code)
-      return name
-    }
-
-    return nok(code)
+    effects.enter(nameType)
+    effects.consume(code)
+    return name
   }
 
   function name(code) {

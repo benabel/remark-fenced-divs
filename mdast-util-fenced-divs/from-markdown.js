@@ -2,7 +2,7 @@ var decode = require('parse-entities/decode-entity')
 
 exports.enter = {
   directiveContainer: enterContainer,
-  directiveContainerAttributes: enterAttributes,
+  directiveContainerAttributes: enterAttributes
 }
 exports.exit = {
   directiveContainer: exit,
@@ -11,7 +11,7 @@ exports.exit = {
   directiveContainerAttributeName: exitAttributeName,
   directiveContainerAttributeValue: exitAttributeValue,
   directiveContainerAttributes: exitAttributes,
-  directiveContainerName: exitName,
+  directiveContainerName: exitName
 }
 
 function enterContainer(token) {
@@ -20,16 +20,25 @@ function enterContainer(token) {
 
 function enter(type, token) {
   this.enter(
-    {type: type, name: '', attributes: {}, data: {hName: 'div', hProperties: {}}, children: []},
+    {
+      type: type,
+      name: '',
+      attributes: {},
+      data: {hName: 'div', hProperties: {}},
+      children: []
+    },
     token
   )
+  this.setData('directiveAttributes', [])
 }
 
 function exitName(token) {
- var name = this.sliceSerialize(token)
- this.stack[this.stack.length - 1].name = name
- this.setData('directiveAttributes', [['class', decodeLight(name)]])
- this.stack[this.stack.length - 1].data.hProperties.className = [decodeLight(name)]
+  var name = this.sliceSerialize(token)
+  this.stack[this.stack.length - 1].name = name
+  this.setData('directiveAttributes', [['class', decodeLight(name)]])
+  this.stack[this.stack.length - 1].data.hProperties.className = [
+    decodeLight(name)
+  ]
 }
 
 function enterAttributes() {
@@ -76,7 +85,6 @@ function exitAttributes() {
       cleaned[attribute[0]] = attribute[1]
     }
   }
-  console.log(cleaned)
 
   this.setData('directiveAttributes')
   this.resume() // Drop EOLs

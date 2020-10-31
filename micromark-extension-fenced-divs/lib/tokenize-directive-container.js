@@ -8,10 +8,7 @@ var markdownLineEnding = require('micromark/dist/character/markdown-line-ending'
 var markdownSpace = require('micromark/dist/character/markdown-space')
 var createSpace = require('micromark/dist/tokenize/factory-space')
 var prefixSize = require('micromark/dist/util/prefix-size')
-var createAttributes = require('./factory-attributes')
-var createName = require('./factory-name')
-
-var attributes = {tokenize: tokenizeAttributes}
+var isNameOrAttribute = require('./factory-name-or-attributes')
 
 function tokenizeDirectiveContainer(effects, ok, nok) {
   var self = this
@@ -44,9 +41,8 @@ function tokenizeDirectiveContainer(effects, ok, nok) {
 
     return beforeName
   }
-  
+
   function beforeName(code) {
-    
     // allow spaces before name
     if (markdownSpace(code)) {
       effects.consume(code)
@@ -54,13 +50,12 @@ function tokenizeDirectiveContainer(effects, ok, nok) {
     }
 
     effects.exit('directiveContainerSequence')
-    return createName(effects, afterName, nok, 'directiveContainerName')(code)
-  }
-
-  function afterName(code) {
-    return code === 123 /* `{` */
-      ? effects.attempt(attributes, afterAttributes, afterAttributes)(code)
-      : afterAttributes(code)
+    return isNameOrAttribute(
+      effects,
+      afterAttributes,
+      nok,
+      'directiveContainerName'
+    )(code)
   }
 
   function afterAttributes(code) {
@@ -173,25 +168,4 @@ function tokenizeDirectiveContainer(effects, ok, nok) {
       return nok(code)
     }
   }
-}
-
-function tokenizeAttributes(effects, ok, nok) {
-  // Always a `{`
-  return createAttributes(
-    effects,
-    ok,
-    nok,
-    'directiveContainerAttributes',
-    'directiveContainerAttributesMarker',
-    'directiveContainerAttribute',
-    'directiveContainerAttributeId',
-    'directiveContainerAttributeClass',
-    'directiveContainerAttributeName',
-    'directiveContainerAttributeInitializerMarker',
-    'directiveContainerAttributeValueLiteral',
-    'directiveContainerAttributeValue',
-    'directiveContainerAttributeValueMarker',
-    'directiveContainerAttributeValueData',
-    true
-  )
 }

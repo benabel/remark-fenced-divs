@@ -87,11 +87,11 @@ test('remark-fenced-divs', function (t) {
   }
 
   t.deepEqual(
-    toTree('::: my-div{.app}\nThis is a paragraph.\n:::').children[0],
+    toTree('::: my-div\nThis is a paragraph.\n:::').children[0],
     {
       type: 'containerDirective',
       name: 'my-div',
-      attributes: {class: 'my-div app'},
+      attributes: {},
       data: {hName: 'div', hProperties: {className: ['my-div']}},
       children: [
         {
@@ -101,6 +101,23 @@ test('remark-fenced-divs', function (t) {
       ]
     },
     'should support named fencedDiv block'
+  )
+
+  t.deepEqual(
+    toTree('::: {.my-div}\nThis is a paragraph.\n:::').children[0],
+    {
+      type: 'containerDirective',
+      name: '',
+      attributes: {class: 'my-div'},
+      data: {hName: 'div', hProperties: {className: ['my-div']}},
+      children: [
+        {
+          type: 'paragraph',
+          children: [{type: 'text', value: 'This is a paragraph.'}]
+        }
+      ]
+    },
+    'should support attributes fencedDiv block'
   )
 
   t.deepEqual(
@@ -155,6 +172,23 @@ test('remark-fenced-divs', function (t) {
     'should support spaces after closing fence'
   )
 
+   t.deepEqual(
+     toTree('  ::: my-div\n  This is a paragraph.\n  :::').children[0],
+     {
+       type: 'containerDirective',
+       name: 'my-div',
+       attributes: {},
+       data: {hName: 'div', hProperties: {className: ['my-div']}},
+       children: [
+         {
+           type: 'paragraph',
+           children: [{type: 'text', value: 'This is a paragraph.'}]
+         }
+       ]
+     },
+     'should support indented fencedDiv block'
+   )
+
    t.equal(
      String(
        toHtml.processSync(
@@ -174,19 +208,8 @@ test('remark-fenced-divs', function (t) {
     '<div class="my-div"><p>This is a paragraph.</p><blockquote>\n<p>block quote</p>\n</blockquote><p>Another paragraph</p></div>',
     'should automatically close at the end of the parent if no closing fence is found'
   )
-  /* 
-  t.equal(
-    unified()
-    .use(parse, {position: false})
-    .use(fencedDiv)
-    .parse('  ::: my-div\n    This is a paragraph.\n  :::'),
-    u('root', [
-      u('paragraph', {
-        children: [u('text', '  :::\n    This is a paragraph.\n  :::')]
-      })
-    ]),
-    'should not support indented fencedDiv block'
-    )
+ 
+    /* 
   t.equal(
     unified()
       .use(parse, {position: false})

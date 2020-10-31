@@ -56,8 +56,8 @@ From `pandoc` reference: <https://pandoc.org/MANUAL.html#extension-fenced_divs>
 - \[x] The attribute syntax is exactly as in fenced code blocks (see Extension:
   fenced_code_attributes). As with fenced code blocks, one can use either
   attributes in curly braces or
-- \[x] a single unbraced word, which will be treated as a class name.
-- \[x] The Div must ends with another line containing a string of at least
+- [x] a single unbraced word, which will be treated as a class name.
+- [x] The Div must ends with another line containing a string of at least
   three consecutive colons at the beginning of the line.
 - The fenced Div should be separated by blank lines:
 - \[x] from preceding
@@ -69,6 +69,7 @@ Other implementations details include:
 - A Div ends with a fence containing at least three consecutive colons plus some spaces.
 - If no closing fence is found, the container runs to the end of its parent
   container (block quote, list item, document, or other container).
+- A fenced div can be indented.
 
 ## Acknowledgments
 
