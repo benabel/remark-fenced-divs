@@ -49,7 +49,7 @@ Will be rendered in `html` as:
 From `pandoc` reference: <https://pandoc.org/MANUAL.html#extension-fenced_divs>
 
 - \[x] A Div must start at the beginning of a line: it mustn't be indented.
-- \[x] A Div starts with a fence containing at least three consecutive colons
+- [x] A Div starts with a fence containing at least three consecutive colons
   plus some attributes.
 - \[x] The attributes may optionally be followed by another string of
   consecutive colons.
@@ -63,6 +63,12 @@ From `pandoc` reference: <https://pandoc.org/MANUAL.html#extension-fenced_divs>
 - \[x] from preceding
 - \[x] and following blocks.
 - \[x] The fenced Div can be nested.
+
+Other implementations details include:
+
+- A Div ends with a fence containing at least three consecutive colons plus some spaces.
+- If no closing fence is found, the container runs to the end of its parent
+  container (block quote, list item, document, or other container).
 
 ## Acknowledgments
 

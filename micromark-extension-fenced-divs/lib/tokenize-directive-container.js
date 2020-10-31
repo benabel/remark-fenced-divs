@@ -17,6 +17,7 @@ function tokenizeDirectiveContainer(effects, ok, nok) {
   var self = this
   var initialPrefix = prefixSize(this.events, 'linePrefix')
   var sizeOpen = 0
+  var minimalFenceSize = 3
   var previous
 
   return start
@@ -37,7 +38,7 @@ function tokenizeDirectiveContainer(effects, ok, nok) {
       return sequenceOpen
     }
 
-    if (sizeOpen < 3) {
+    if (sizeOpen < minimalFenceSize) {
       return nok(code)
     }
 
@@ -158,7 +159,7 @@ function tokenizeDirectiveContainer(effects, ok, nok) {
         return closingSequence
       }
 
-      if (size < sizeOpen) return nok(code)
+      if (size < minimalFenceSize) return nok(code)
       effects.exit('directiveContainerSequence')
       return createSpace(effects, closingSequenceEnd, 'whitespace')(code)
     }
