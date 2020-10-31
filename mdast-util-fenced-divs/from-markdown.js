@@ -4,7 +4,7 @@ exports.canContainEols = ['textDirective']
 exports.enter = {
   directiveContainer: enterContainer,
   directiveContainerAttributes: enterAttributes,
-  directiveContainerLabel: enterContainerLabel,
+  directiveContainerLabel: enterContainerLabel
 }
 exports.exit = {
   directiveContainer: exit,
@@ -14,7 +14,7 @@ exports.exit = {
   directiveContainerAttributeValue: exitAttributeValue,
   directiveContainerAttributes: exitAttributes,
   directiveContainerLabel: exitContainerLabel,
-  directiveContainerName: exitName,
+  directiveContainerName: exitName
 }
 
 function enterContainer(token) {

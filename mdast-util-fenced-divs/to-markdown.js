@@ -1,11 +1,11 @@
 exports.unsafe = [
   {
     character: '\r',
-    inConstruct: ['leafDirectiveLabel', 'containerDirectiveLabel']
+    inConstruct: ['containerDirectiveLabel']
   },
   {
     character: '\n',
-    inConstruct: ['leafDirectiveLabel', 'containerDirectiveLabel']
+    inConstruct: ['containerDirectiveLabel']
   },
   {
     before: '[^:]',
@@ -17,9 +17,7 @@ exports.unsafe = [
 ]
 
 exports.handlers = {
-  containerDirective: handleDirective,
-  leafDirective: handleDirective,
-  textDirective: handleDirective
+  containerDirective: handleDirective
 }
 
 handleDirective.peek = peekDirective

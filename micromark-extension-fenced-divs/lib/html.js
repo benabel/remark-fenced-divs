@@ -33,38 +33,12 @@ function createDirectiveHtmlExtension(options) {
       directiveContainerContent: exitContainerContent,
       directiveContainerFence: exitContainerFence,
       directiveContainerLabel: exitLabel,
-      directiveContainerName: exitName,
-
-      directiveLeaf: exit,
-      directiveLeafAttributeClassValue: exitAttributeClassValue,
-      directiveLeafAttributeIdValue: exitAttributeIdValue,
-      directiveLeafAttributeName: exitAttributeName,
-      directiveLeafAttributeValue: exitAttributeValue,
-      directiveLeafAttributes: exitAttributes,
-      directiveLeafLabel: exitLabel,
-      directiveLeafName: exitName,
-
-      directiveText: exit,
-      directiveTextAttributeClassValue: exitAttributeClassValue,
-      directiveTextAttributeIdValue: exitAttributeIdValue,
-      directiveTextAttributeName: exitAttributeName,
-      directiveTextAttributeValue: exitAttributeValue,
-      directiveTextAttributes: exitAttributes,
-      directiveTextLabel: exitLabel,
-      directiveTextName: exitName
+      directiveContainerName: exitName
     }
   }
 
   function enterContainer() {
     return enter.call(this, 'containerDirective')
-  }
-
-  function enterLeaf() {
-    return enter.call(this, 'leafDirective')
-  }
-
-  function enterText() {
-    return enter.call(this, 'textDirective')
   }
 
   function enter(type) {
