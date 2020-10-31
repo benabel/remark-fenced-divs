@@ -5,6 +5,7 @@ exports.concrete = true
 
 // To do: use `dist/`
 var markdownLineEnding = require('micromark/dist/character/markdown-line-ending')
+var markdownSpace = require('micromark/dist/character/markdown-space')
 var createSpace = require('micromark/dist/tokenize/factory-space')
 var prefixSize = require('micromark/dist/util/prefix-size')
 var createAttributes = require('./factory-attributes')
@@ -40,6 +41,16 @@ function tokenizeDirectiveContainer(effects, ok, nok) {
 
     if (sizeOpen < 3) {
       return nok(code)
+    }
+
+    return beforeName
+  }
+  
+  function beforeName(code) {
+    // allow spaces before name
+    if (markdownSpace(code)) {
+      effects.consume(code)
+      return beforeName
     }
 
     effects.exit('directiveContainerSequence')

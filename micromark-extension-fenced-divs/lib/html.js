@@ -15,13 +15,6 @@ function createDirectiveHtmlExtension(options) {
       directiveContainerContent: enterContainerContent,
       directiveContainerLabel: enterLabel,
 
-      directiveLeaf: enterLeaf,
-      directiveLeafAttributes: enterAttributes,
-      directiveLeafLabel: enterLabel,
-
-      directiveText: enterText,
-      directiveTextAttributes: enterAttributes,
-      directiveTextLabel: enterLabel
     },
     exit: {
       directiveContainer: exit,
@@ -33,7 +26,8 @@ function createDirectiveHtmlExtension(options) {
       directiveContainerContent: exitContainerContent,
       directiveContainerFence: exitContainerFence,
       directiveContainerLabel: exitLabel,
-      directiveContainerName: exitName
+      directiveContainerName: exitName,
+      
     }
   }
 

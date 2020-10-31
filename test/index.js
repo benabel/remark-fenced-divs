@@ -45,13 +45,13 @@ test('fixtures', function (t) {
       var output
       var expected
 
-      // Md -> mdast -> md
+      // md -> mdast -> md
       proc = remark().use(fencedDiv).freeze()
       actual = proc.parse(file)
 
       try {
         expected = JSON.parse(fs.readFileSync(treePath))
-      } catch {
+      } catch (_) {
         // New fixture.
         fs.writeFileSync(treePath, JSON.stringify(actual, 0, 2) + '\n')
         expected = actual
@@ -59,12 +59,13 @@ test('fixtures', function (t) {
 
       try {
         output = fs.readFileSync(outputPath, 'utf8')
-      } catch {
+      } catch (_) {
         output = input
       }
 
       st.deepEqual(actual, expected, 'tree')
       st.equal(String(proc.processSync(file)), output, 'process')
+
 
       st.end()
     })
@@ -79,7 +80,7 @@ test('remark-fenced-divs', function (t) {
     .use(rehypeStringify)
 
   /* 
-  T.deepEqual(
+  t.deepEqual(
     unified()
       .use(parse, {position: false})
       .use(fencedDiv)
@@ -127,7 +128,7 @@ test('remark-fenced-divs', function (t) {
     'should not affect the next block'
   )
   /*
-  T.deepEqual(
+  t.deepEqual(
     String(toHtml.processSync(':::my-div\nI am just `javascript`\n:::')),
     '<div class="my-div"><p>I am just <code>javascript</code></p></div>',
     'should support inline markdown inside the div'
@@ -421,3 +422,4 @@ Here is a paragraph.
   */
   t.end()
 })
+

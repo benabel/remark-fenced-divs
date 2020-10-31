@@ -17,7 +17,7 @@ exports.unsafe = [
 ]
 
 exports.handlers = {
-  containerDirective: handleDirective
+  containerDirective: handleDirective,
 }
 
 handleDirective.peek = peekDirective
