@@ -5,12 +5,6 @@ exports.enter = {
   directiveContainer: enterContainer,
   directiveContainerAttributes: enterAttributes,
   directiveContainerLabel: enterContainerLabel,
-
-  directiveLeaf: enterLeaf,
-  directiveLeafAttributes: enterAttributes,
-
-  directiveText: enterText,
-  directiveTextAttributes: enterAttributes
 }
 exports.exit = {
   directiveContainer: exit,
@@ -21,34 +15,10 @@ exports.exit = {
   directiveContainerAttributes: exitAttributes,
   directiveContainerLabel: exitContainerLabel,
   directiveContainerName: exitName,
-
-  directiveLeaf: exit,
-  directiveLeafAttributeClassValue: exitAttributeClassValue,
-  directiveLeafAttributeIdValue: exitAttributeIdValue,
-  directiveLeafAttributeName: exitAttributeName,
-  directiveLeafAttributeValue: exitAttributeValue,
-  directiveLeafAttributes: exitAttributes,
-  directiveLeafName: exitName,
-
-  directiveText: exit,
-  directiveTextAttributeClassValue: exitAttributeClassValue,
-  directiveTextAttributeIdValue: exitAttributeIdValue,
-  directiveTextAttributeName: exitAttributeName,
-  directiveTextAttributeValue: exitAttributeValue,
-  directiveTextAttributes: exitAttributes,
-  directiveTextName: exitName
 }
 
 function enterContainer(token) {
   enter.call(this, 'containerDirective', token)
-}
-
-function enterLeaf(token) {
-  enter.call(this, 'leafDirective', token)
-}
-
-function enterText(token) {
-  enter.call(this, 'textDirective', token)
 }
 
 function enter(type, token) {

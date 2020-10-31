@@ -35,30 +35,20 @@ test('fixtures', function (t) {
       var file = vfile.readSync(path.join(base, fixture, 'input.md'))
       var input = String(file.contents)
       var outputPath = path.join(base, fixture, 'output.md')
-      var treePath = path.join(base, fixture, 'tree.json')
       var proc
       var actual
       var output
-      var expected
 
       proc = remark().use(directive).freeze()
       actual = proc.parse(file)
 
       try {
-        expected = JSON.parse(fs.readFileSync(treePath))
-      } catch {
-        // New fixture.
-        fs.writeFileSync(treePath, JSON.stringify(actual, 0, 2) + '\n')
-        expected = actual
-      }
-
-      try {
         output = fs.readFileSync(outputPath, 'utf8')
-      } catch {
+      } catch (_) {
+        // New fixture.
         output = input
       }
 
-      st.deepEqual(actual, expected, 'tree')
       st.equal(String(proc.processSync(file)), output, 'process')
 
       st.end()
