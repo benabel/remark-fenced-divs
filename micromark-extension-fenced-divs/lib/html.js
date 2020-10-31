@@ -13,7 +13,6 @@ function createDirectiveHtmlExtension(options) {
       directiveContainer: enterContainer,
       directiveContainerAttributes: enterAttributes,
       directiveContainerContent: enterContainerContent,
-      directiveContainerLabel: enterLabel,
 
     },
     exit: {
@@ -25,7 +24,6 @@ function createDirectiveHtmlExtension(options) {
       directiveContainerAttributes: exitAttributes,
       directiveContainerContent: exitContainerContent,
       directiveContainerFence: exitContainerFence,
-      directiveContainerLabel: exitLabel,
       directiveContainerName: exitName,
       
     }
@@ -44,16 +42,6 @@ function createDirectiveHtmlExtension(options) {
   function exitName(token) {
     var stack = this.getData('directiveStack')
     stack[stack.length - 1].name = this.sliceSerialize(token)
-  }
-
-  function enterLabel() {
-    this.buffer()
-  }
-
-  function exitLabel() {
-    var data = this.resume()
-    var stack = this.getData('directiveStack')
-    stack[stack.length - 1].label = data
   }
 
   function enterAttributes() {

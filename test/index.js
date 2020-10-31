@@ -10,6 +10,7 @@ var parse = require('remark-parse')
 var remark2rehype = require('remark-rehype')
 var rehypeStringify = require('rehype-stringify')
 var u = require('unist-builder')
+var removePosition = require('unist-util-remove-position')
 var not = require('not')
 var hidden = require('is-hidden')
 var fencedDiv = require('..')
@@ -25,7 +26,7 @@ test('directive()', function (t) {
 
   t.end()
 })
-
+/*
 test('fixtures', function (t) {
   var base = path.join(__dirname, 'fixtures')
   var entries = fs.readdirSync(base).filter(not(hidden))
@@ -71,7 +72,7 @@ test('fixtures', function (t) {
     })
   }
 })
-
+*/
 test('remark-fenced-divs', function (t) {
   const toHtml = unified()
     .use(parse)
@@ -79,19 +80,50 @@ test('remark-fenced-divs', function (t) {
     .use(remark2rehype)
     .use(rehypeStringify)
 
+  const toTree = function (mdAst) {
+    var tree = unified().use(parse).use(fencedDiv).parse(mdAst)
+    tree = removePosition(tree, true)
+    return tree
+  }
+
+  t.deepEqual(
+    toTree('::: my-div{.app}\nThis is a paragraph.\n:::').children[0],
+    {
+      type: 'containerDirective',
+      name: 'my-div',
+      attributes: {class: 'my-div app'},
+      data: {hName: 'div', hProperties: {className: ['my-div']}},
+      children: [
+        {
+          type: 'paragraph',
+          children: [{type: 'text', value: 'This is a paragraph.'}]
+        }
+      ]
+    },
+    'should support named fencedDiv block'
+  )
+
+  t.deepEqual(
+    toTree(':::\nThis is a paragraph.\n:::').children[0],
+    {
+      type: 'paragraph',
+      children: [{type: 'text', value: ':::\nThis is a paragraph.\n:::'}]
+    },
+    'should not support unamed fencedDiv block'
+  )
   /* 
   t.deepEqual(
     unified()
-      .use(parse, {position: false})
-      .use(fencedDiv)
-      .parse('  :::\n    This is a paragraph.\n  :::'),
+    .use(parse, {position: false})
+    .use(fencedDiv)
+    .parse('  ::: my-div\n    This is a paragraph.\n  :::'),
     u('root', [
       u('paragraph', {
         children: [u('text', '  :::\n    This is a paragraph.\n  :::')]
       })
     ]),
     'should not support indented fencedDiv block'
-  )
+    )
   t.deepEqual(
     unified()
       .use(parse, {position: false})
@@ -118,7 +150,7 @@ test('remark-fenced-divs', function (t) {
   )
   */
 
-  t.deepEqual(
+  t.equal(
     String(
       toHtml.processSync(
         '::: my-div\nThis is a paragraph.\n:::\n```\nbravo\n```\n'
@@ -127,7 +159,11 @@ test('remark-fenced-divs', function (t) {
     '<div class="my-div"><p>This is a paragraph.</p></div>\n<pre><code>bravo\n</code></pre>',
     'should not affect the next block'
   )
-  /*
+  t.equal(
+    String(toHtml.processSync('::: my-div my-div2\nThis is a paragraph.\n:::')),
+    '<p>::: my-div my-div2\nThis is a paragraph.\n:::</p>',
+    'should not support spaces in names'
+  )
   t.deepEqual(
     String(toHtml.processSync(':::my-div\nI am just `javascript`\n:::')),
     '<div class="my-div"><p>I am just <code>javascript</code></p></div>',
@@ -157,15 +193,17 @@ test('remark-fenced-divs', function (t) {
     '<p>:::just three colons</p>',
     'should not support an opening fence without newline'
   )
+
   t.deepEqual(
     String(toHtml.processSync(':::      must\nThis is a paragraph.\n:::')),
     '<div class="must"><p>This is a paragraph.</p></div>',
-    'should allow extra spaces before class names'
+    'should allow extra spaces before named attribute'
   )
+
   t.deepEqual(
     String(toHtml.processSync(':::must         \nThis is a paragraph.\n:::')),
     '<div class="must"><p>This is a paragraph.</p></div>',
-    'should allow extra spaces after class names'
+    'should allow extra spaces after named attribute'
   )
   t.deepEqual(
     String(toHtml.processSync(':::  my-div\nThis is a paragraph.\n:::')),
@@ -181,6 +219,7 @@ test('remark-fenced-divs', function (t) {
     '<div class="my-class"><p>This is a paragraph.</p></div>',
     'should include values after the opening fence except for fence delimiter'
   )
+  /*
   t.deepEqual(
     String(
       toHtml.processSync(
@@ -422,4 +461,3 @@ Here is a paragraph.
   */
   t.end()
 })
-

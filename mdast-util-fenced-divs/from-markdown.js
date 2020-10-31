@@ -1,10 +1,8 @@
 var decode = require('parse-entities/decode-entity')
 
-exports.canContainEols = ['textDirective']
 exports.enter = {
   directiveContainer: enterContainer,
   directiveContainerAttributes: enterAttributes,
-  directiveContainerLabel: enterContainerLabel,
 }
 exports.exit = {
   directiveContainer: exit,
@@ -13,7 +11,6 @@ exports.exit = {
   directiveContainerAttributeName: exitAttributeName,
   directiveContainerAttributeValue: exitAttributeValue,
   directiveContainerAttributes: exitAttributes,
-  directiveContainerLabel: exitContainerLabel,
   directiveContainerName: exitName,
 }
 
@@ -22,26 +19,20 @@ function enterContainer(token) {
 }
 
 function enter(type, token) {
-  this.enter({type: type, name: '', attributes: {}, children: []}, token)
-}
-
-function exitName(token) {
-  this.stack[this.stack.length - 1].name = this.sliceSerialize(token)
-}
-
-function enterContainerLabel(token) {
   this.enter(
-    {type: 'paragraph', data: {directiveLabel: true}, children: []},
+    {type: type, name: '', attributes: {}, data: {hName: 'div', hProperties: {}}, children: []},
     token
   )
 }
 
-function exitContainerLabel(token) {
-  this.exit(token)
+function exitName(token) {
+ var name = this.sliceSerialize(token)
+ this.stack[this.stack.length - 1].name = name
+ this.setData('directiveAttributes', [['class', decodeLight(name)]])
+ this.stack[this.stack.length - 1].data.hProperties.className = [decodeLight(name)]
 }
 
 function enterAttributes() {
-  this.setData('directiveAttributes', [])
   this.buffer() // Capture EOLs
 }
 
@@ -85,6 +76,7 @@ function exitAttributes() {
       cleaned[attribute[0]] = attribute[1]
     }
   }
+  console.log(cleaned)
 
   this.setData('directiveAttributes')
   this.resume() // Drop EOLs

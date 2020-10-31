@@ -9,10 +9,8 @@ var markdownSpace = require('micromark/dist/character/markdown-space')
 var createSpace = require('micromark/dist/tokenize/factory-space')
 var prefixSize = require('micromark/dist/util/prefix-size')
 var createAttributes = require('./factory-attributes')
-var createLabel = require('./factory-label')
 var createName = require('./factory-name')
 
-var label = {tokenize: tokenizeLabel}
 var attributes = {tokenize: tokenizeAttributes}
 
 function tokenizeDirectiveContainer(effects, ok, nok) {
@@ -47,6 +45,7 @@ function tokenizeDirectiveContainer(effects, ok, nok) {
   }
   
   function beforeName(code) {
+    
     // allow spaces before name
     if (markdownSpace(code)) {
       effects.consume(code)
@@ -58,12 +57,6 @@ function tokenizeDirectiveContainer(effects, ok, nok) {
   }
 
   function afterName(code) {
-    return code === 91 /* `[` */
-      ? effects.attempt(label, afterLabel, afterLabel)(code)
-      : afterLabel(code)
-  }
-
-  function afterLabel(code) {
     return code === 123 /* `{` */
       ? effects.attempt(attributes, afterAttributes, afterAttributes)(code)
       : afterAttributes(code)
@@ -179,20 +172,6 @@ function tokenizeDirectiveContainer(effects, ok, nok) {
       return nok(code)
     }
   }
-}
-
-function tokenizeLabel(effects, ok, nok) {
-  // Always a `[`
-  return createLabel(
-    effects,
-    ok,
-    nok,
-    'directiveContainerLabel',
-    'directiveContainerLabelMarker',
-    'directiveContainerLabelString',
-    true,
-    true
-  )
 }
 
 function tokenizeAttributes(effects, ok, nok) {

@@ -1,13 +1,5 @@
 exports.unsafe = [
   {
-    character: '\r',
-    inConstruct: ['containerDirectiveLabel']
-  },
-  {
-    character: '\n',
-    inConstruct: ['containerDirectiveLabel']
-  },
-  {
     before: '[^:]',
     character: ':',
     after: '[A-Za-z]',
@@ -39,7 +31,6 @@ function handleDirective(node, _, context) {
   var value =
     prefix +
     (node.name || '') +
-    label(node, context) +
     attributes(node, context)
   var subvalue
 
@@ -55,25 +46,6 @@ function handleDirective(node, _, context) {
 
 function peekDirective() {
   return ':'
-}
-
-function label(node, context) {
-  var label = node
-  var exit
-  var subexit
-  var value
-
-  if (node.type === 'containerDirective') {
-    if (!inlineDirectiveLabel(node)) return ''
-    label = node.children[0]
-  }
-
-  exit = context.enter('label')
-  subexit = context.enter(node.type + 'Label')
-  value = phrasing(label, context, {before: '[', after: ']'})
-  subexit()
-  exit()
-  return value ? '[' + value + ']' : ''
 }
 
 function attributes(node, context) {
@@ -155,18 +127,9 @@ function inlineDirectiveLabel(node) {
 }
 
 function fence(node) {
-  var size = 0
-
-  if (node.type === 'containerDirective') {
-    visit(node, 'containerDirective', onvisit)
-    size += 3
-  } else if (node.type === 'leafDirective') {
-    size = 2
-  } else {
-    size = 1
-  }
-
-  return repeatString(':', size)
+  
+  visit(node, 'containerDirective', onvisit)
+  return repeatString(':', 3)
 
   function onvisit(node, parents) {
     var index = parents.length
