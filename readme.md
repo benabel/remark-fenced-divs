@@ -24,7 +24,7 @@ Will be rendered in `html` as:
 
 ```html
 <div class="my-div">
-    <p>This is a paragraph.</p>
+  <p>This is a paragraph.</p>
 </div>
 ```
 
@@ -40,7 +40,7 @@ Will be rendered in `html` as:
 
 ```html
 <div id="navbar" class="container right" data-key1="1" data-key2="value 2">
-    <p>This is a paragraph.</p>
+  <p>This is a paragraph.</p>
 </div>
 ```
 
@@ -48,28 +48,25 @@ Will be rendered in `html` as:
 
 From `pandoc` reference: <https://pandoc.org/MANUAL.html#extension-fenced_divs>
 
--   [x] A Div must start at the beginning of a line: it mustn't be indented.
--   [x] A Div starts with a fence containing at least three consecutive colons
-    plus some attributes.
--   [x] The attributes may optionally be followed by another string of
-    consecutive colons.
--   [x] The attribute syntax is exactly as in fenced code blocks (see Extension:
-        fenced_code_attributes). As with fenced code blocks, one can use either
-        attributes in curly braces or
--   [x] a single unbraced word, which will be treated as a class name.
--   [x] The Div must ends with another line containing a string of at least
-    three consecutive colons at the beginning of the line.
--   The fenced Div should be separated by blank lines:
--   [x] from preceding 
--   [x] and following blocks.
--   [x] The fenced Div can be nested.
+- \[x] A Div must start at the beginning of a line: it mustn't be indented.
+- \[x] A Div starts with a fence containing at least three consecutive colons
+  plus some attributes.
+- \[x] The attributes may optionally be followed by another string of
+  consecutive colons.
+- \[x] The attribute syntax is exactly as in fenced code blocks (see Extension:
+  fenced_code_attributes). As with fenced code blocks, one can use either
+  attributes in curly braces or
+- \[x] a single unbraced word, which will be treated as a class name.
+- \[x] The Div must ends with another line containing a string of at least
+  three consecutive colons at the beginning of the line.
+- The fenced Div should be separated by blank lines:
+- \[x] from preceding
+- \[x] and following blocks.
+- \[x] The fenced Div can be nested.
 
 ## Acknowledgments
 
 Code adapted from:
 
--   [`remark-math`](https://github.com/Rokt33r/remark-math) and
-    [`remark-containers`](https://github.com/Nevenall/remark-containers) for the
-    parser.
--   and [`remark-react`](https://github.com/remarkjs/remark-react) for the
-    structure.
+- [`remark-directive`](https://github.com/remarkjs/remark-directive) by Titus
+  Wormer licensed under the MIT licence.
