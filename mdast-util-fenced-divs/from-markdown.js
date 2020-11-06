@@ -22,7 +22,6 @@ function enter(type, token) {
   this.enter(
     {
       type: type,
-      name: '',
       attributes: {},
       data: {hName: 'div', hProperties: {}},
       children: []
@@ -34,7 +33,6 @@ function enter(type, token) {
 
 function exitName(token) {
   var name = this.sliceSerialize(token)
-  this.stack[this.stack.length - 1].name = name
   this.setData('directiveAttributes', [['class', decodeLight(name)]])
   this.stack[this.stack.length - 1].data.hProperties.className = [
     decodeLight(name)
