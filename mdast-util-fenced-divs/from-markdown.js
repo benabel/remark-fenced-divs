@@ -89,6 +89,12 @@ function exitAttributes() {
   this.setData('directiveAttributes')
   this.resume() // Drop EOLs
   this.stack[this.stack.length - 1].attributes = cleaned
+
+  // set hProperties
+  this.stack[
+    this.stack.length - 1
+  ].data.hProperties.className = cleaned.class.split(' ')
+  this.stack[this.stack.length - 1].data.hProperties.id = cleaned.id
 }
 
 function exit(token) {

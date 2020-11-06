@@ -104,12 +104,16 @@ test('remark-fenced-divs', function (t) {
   )
 
   t.deepEqual(
-    toTree('::: {.my-div}\nThis is a paragraph.\n:::').children[0],
+    toTree('::: {.my-class1 .my-class2 #my-id}\nThis is a paragraph.\n:::')
+      .children[0],
     {
       type: 'containerDirective',
       name: '',
-      attributes: {class: 'my-div'},
-      data: {hName: 'div', hProperties: {className: ['my-div']}},
+      attributes: {class: 'my-class1 my-class2', id: 'my-id'},
+      data: {
+        hName: 'div',
+        hProperties: {className: ['my-class1', 'my-class2'], id: 'my-id'}
+      },
       children: [
         {
           type: 'paragraph',
