@@ -2,7 +2,7 @@
   "type": "root",
   "children": [
     {
-      "type": "containerDirective",
+      "type": "fencedDiv",
       "name": "a",
       "attributes": {},
       "children": [],
@@ -20,7 +20,7 @@
       }
     },
     {
-      "type": "containerDirective",
+      "type": "fencedDiv",
       "name": "a",
       "attributes": {
         "b": ""
@@ -40,7 +40,7 @@
       }
     },
     {
-      "type": "containerDirective",
+      "type": "fencedDiv",
       "name": "a",
       "attributes": {
         "id": "e",
@@ -62,17 +62,17 @@
       }
     },
     {
-      "type": "containerDirective",
+      "type": "fencedDiv",
       "name": "a",
       "attributes": {},
       "children": [
         {
-          "type": "containerDirective",
+          "type": "fencedDiv",
           "name": "b",
           "attributes": {},
           "children": [
             {
-              "type": "containerDirective",
+              "type": "fencedDiv",
               "name": "c",
               "attributes": {},
               "children": [],
@@ -118,7 +118,7 @@
       }
     },
     {
-      "type": "containerDirective",
+      "type": "fencedDiv",
       "name": "a",
       "attributes": {},
       "children": [
@@ -156,7 +156,7 @@
           }
         },
         {
-          "type": "containerDirective",
+          "type": "fencedDiv",
           "name": "c",
           "attributes": {},
           "children": [
@@ -194,7 +194,7 @@
               }
             },
             {
-              "type": "containerDirective",
+              "type": "fencedDiv",
               "name": "e",
               "attributes": {},
               "children": [

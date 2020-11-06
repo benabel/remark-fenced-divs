@@ -121,7 +121,7 @@ An object representing a directive.
 ###### Fields
 
 - `type` (`enum`, either `'textDirective'`, `'leafDirective'`, or
-  `'containerDirective'`)
+  `'fencedDiv'`)
 - `name` (`string`) — name of directive
 - `label` (`string?`) — compiled HTML content in brackets
 - `attributes` (`Object.<string>?`) — optional object w/ HTML attributes

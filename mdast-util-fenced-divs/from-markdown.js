@@ -15,7 +15,7 @@ exports.exit = {
 }
 
 function enterContainer(token) {
-  enter.call(this, 'containerDirective', token)
+  enter.call(this, 'fencedDiv', token)
 }
 
 function enter(type, token) {

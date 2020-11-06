@@ -91,7 +91,7 @@ test('markdown -> mdast', function (t) {
       mdastExtensions: [directive.fromMarkdown]
     }).children[0],
     {
-      type: 'containerDirective',
+      type: 'fencedDiv',
       name: 'a',
       attributes: {c: ''},
       children: [
@@ -218,12 +218,12 @@ test('markdown -> mdast', function (t) {
       true
     ).children[0],
     {
-      type: 'containerDirective',
+      type: 'fencedDiv',
       name: 'a',
       attributes: {},
       children: [
         {
-          type: 'containerDirective',
+          type: 'fencedDiv',
           name: 'b',
           attributes: {},
           children: [
@@ -552,7 +552,7 @@ test('mdast -> markdown', function (t) {
 
   t.deepEqual(
     toMarkdown(
-      {type: 'containerDirective'},
+      {type: 'fencedDiv'},
       {extensions: [directive.toMarkdown]}
     ),
     ':::\n:::\n',
@@ -561,7 +561,7 @@ test('mdast -> markdown', function (t) {
 
   t.deepEqual(
     toMarkdown(
-      {type: 'containerDirective', name: 'a'},
+      {type: 'fencedDiv', name: 'a'},
       {extensions: [directive.toMarkdown]}
     ),
     ':::a\n:::\n',
@@ -571,7 +571,7 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {
-        type: 'containerDirective',
+        type: 'fencedDiv',
         name: 'a',
         children: [{type: 'paragraph', children: [{type: 'text', value: 'b'}]}]
       },
@@ -584,7 +584,7 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {
-        type: 'containerDirective',
+        type: 'fencedDiv',
         name: 'a',
         children: [{type: 'heading', children: [{type: 'text', value: 'b'}]}]
       },
@@ -597,7 +597,7 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {
-        type: 'containerDirective',
+        type: 'fencedDiv',
         name: 'a',
         children: [{type: 'text', value: 'b\nc'}]
       },
@@ -610,7 +610,7 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {
-        type: 'containerDirective',
+        type: 'fencedDiv',
         name: 'a',
         attributes: {id: 'b', class: 'c d', key: 'e\nf'}
       },
@@ -623,7 +623,7 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {
-        type: 'containerDirective',
+        type: 'fencedDiv',
         name: 'a',
         children: [
           {
@@ -642,11 +642,11 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {
-        type: 'containerDirective',
+        type: 'fencedDiv',
         name: 'a',
         children: [
           {
-            type: 'containerDirective',
+            type: 'fencedDiv',
             name: 'b',
             children: [
               {
@@ -666,11 +666,11 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {
-        type: 'containerDirective',
+        type: 'fencedDiv',
         name: 'a',
         children: [
           {
-            type: 'containerDirective',
+            type: 'fencedDiv',
             name: 'b',
             children: [
               {
@@ -680,7 +680,7 @@ test('mdast -> markdown', function (t) {
             ]
           },
           {
-            type: 'containerDirective',
+            type: 'fencedDiv',
             name: 'd',
             children: [
               {
@@ -700,15 +700,15 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {
-        type: 'containerDirective',
+        type: 'fencedDiv',
         name: 'a',
         children: [
           {
-            type: 'containerDirective',
+            type: 'fencedDiv',
             name: 'b',
             children: [
               {
-                type: 'containerDirective',
+                type: 'fencedDiv',
                 name: 'c',
                 children: [
                   {
@@ -730,14 +730,14 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {
-        type: 'containerDirective',
+        type: 'fencedDiv',
         name: 'a',
         children: [
           {
             type: 'blockquote',
             children: [
               {
-                type: 'containerDirective',
+                type: 'fencedDiv',
                 name: 'b',
                 children: [
                   {

@@ -89,7 +89,7 @@ test('remark-fenced-divs', function (t) {
   t.deepEqual(
     toTree('::: my-div\nThis is a paragraph.\n:::').children[0],
     {
-      type: 'containerDirective',
+      type: 'fencedDiv',
       attributes: {},
       data: {hName: 'div', hProperties: {className: ['my-div']}},
       children: [
@@ -106,7 +106,7 @@ test('remark-fenced-divs', function (t) {
     toTree('::: {.my-class1 .my-class2 #my-id}\nThis is a paragraph.\n:::')
       .children[0],
     {
-      type: 'containerDirective',
+      type: 'fencedDiv',
       attributes: {class: 'my-class1 my-class2', id: 'my-id'},
       data: {
         hName: 'div',
@@ -143,7 +143,7 @@ test('remark-fenced-divs', function (t) {
   t.deepEqual(
     toTree('::: my-div\nThis is a paragraph.\n::').children[0],
     {
-      type: 'containerDirective',
+      type: 'fencedDiv',
       attributes: {},
       data: {hName: 'div', hProperties: {className: ['my-div']}},
       children: [
@@ -159,7 +159,7 @@ test('remark-fenced-divs', function (t) {
   t.deepEqual(
     toTree('::: my-div\nThis is a paragraph.\n:::    \n').children[0],
     {
-      type: 'containerDirective',
+      type: 'fencedDiv',
       attributes: {},
       data: {hName: 'div', hProperties: {className: ['my-div']}},
       children: [
@@ -175,7 +175,7 @@ test('remark-fenced-divs', function (t) {
   t.deepEqual(
     toTree('  ::: my-div\n  This is a paragraph.\n  :::').children[0],
     {
-      type: 'containerDirective',
+      type: 'fencedDiv',
       attributes: {},
       data: {hName: 'div', hProperties: {className: ['my-div']}},
       children: [

@@ -30,7 +30,7 @@ function createDirectiveHtmlExtension(options) {
   }
 
   function enterContainer() {
-    return enter.call(this, 'containerDirective')
+    return enter.call(this, 'fencedDiv')
   }
 
   function enter(type) {

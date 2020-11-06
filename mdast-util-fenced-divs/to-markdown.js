@@ -9,7 +9,7 @@ exports.unsafe = [
 ]
 
 exports.handlers = {
-  containerDirective: handleDirective,
+  fencedDiv: handleDirective,
 }
 
 handleDirective.peek = peekDirective
@@ -34,7 +34,7 @@ function handleDirective(node, _, context) {
     attributes(node, context)
   var subvalue
 
-  if (node.type === 'containerDirective') {
+  if (node.type === 'fencedDiv') {
     subvalue = content(node, context)
     if (subvalue) value += '\n' + subvalue
     value += '\n' + prefix
@@ -128,7 +128,7 @@ function inlineDirectiveLabel(node) {
 
 function fence(node) {
   
-  visit(node, 'containerDirective', onvisit)
+  visit(node, 'fencedDiv', onvisit)
   return repeatString(':', 3)
 
   function onvisit(node, parents) {
@@ -136,7 +136,7 @@ function fence(node) {
     var nesting = 0
 
     while (index--) {
-      if (parents[index].type === 'containerDirective') {
+      if (parents[index].type === 'fencedDiv') {
         nesting++
       }
     }

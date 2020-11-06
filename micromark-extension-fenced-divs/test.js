@@ -1304,9 +1304,9 @@ function h(d) {
   this.tag('>')
 
   if (content) {
-    if (d.type === 'containerDirective') this.lineEndingIfNeeded()
+    if (d.type === 'fencedDiv') this.lineEndingIfNeeded()
     this.raw(content)
-    if (d.type === 'containerDirective') this.lineEndingIfNeeded()
+    if (d.type === 'fencedDiv') this.lineEndingIfNeeded()
   }
 
   if (!voids.includes(d.name)) this.tag('</' + d.name + '>')
