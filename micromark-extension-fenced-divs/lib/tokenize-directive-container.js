@@ -59,6 +59,16 @@ function tokenizeDirectiveContainer(effects, ok, nok) {
   }
 
   function afterAttributes(code) {
+    return createSpace(effects, sequenceOpenEndFence, 'whitespace')(code)
+  }
+
+  function sequenceOpenEndFence(code) {
+    // allow colons at the end of the opening fence
+    if (code === 58 /* `:` */) {
+      effects.consume(code)
+      return sequenceOpenEndFence
+    }
+
     return createSpace(effects, openAfter, 'whitespace')(code)
   }
 

@@ -295,7 +295,6 @@ test('remark-fenced-divs', function (t) {
     '<div class="my-div"><p>This is a paragraph.</p></div>',
     'should include values after the opening fence (except for spacing #2)'
   )
-  /*
   t.equal(
     String(
       toHtml.processSync(
@@ -339,19 +338,20 @@ test('remark-fenced-divs', function (t) {
   )
   t.equal(
     String(toHtml.processSync('   :::\n   1+1 = 2\n   :::')),
-    '<p>   :::\n1+1 = 2\n:::</p>',
+    '<p>:::\n1+1 = 2\n:::</p>',
     'Should not allow initial spacing'
   )
   t.equal(
     String(toHtml.processSync('    :::\n    1+1 = 2\n    :::')),
     '<pre><code>:::\n1+1 = 2\n:::\n</code></pre>',
     'Should not allow initial spacing: 4 means a code block'
-  )
-  t.equal(
-    String(toHtml.processSync('tango\n::: my-div\nThis is a paragraph.\n:::')),
-    '<p>tango\n::: my-div\nThis is a paragraph.\n:::</p>',
-    'should not support a fencedDiv block right after a paragraph'
-  )
+    )
+    t.equal(
+      String(toHtml.processSync('tango\n::: my-div\nThis is a paragraph.\n:::')),
+      '<p>tango\n::: my-div\nThis is a paragraph.\n:::</p>',
+      'should not support a fencedDiv block right after a paragraph'
+      )
+      /*
   t.equal(
     String(
       toHtml.processSync('tango\n\n::: my-div\nThis is a paragraph.\n:::')
