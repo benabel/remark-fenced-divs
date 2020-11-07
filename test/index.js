@@ -345,20 +345,20 @@ test('remark-fenced-divs', function (t) {
     String(toHtml.processSync('    :::\n    1+1 = 2\n    :::')),
     '<pre><code>:::\n1+1 = 2\n:::\n</code></pre>',
     'Should not allow initial spacing: 4 means a code block'
-    )
-    t.equal(
-      String(toHtml.processSync('tango\n::: my-div\nThis is a paragraph.\n:::')),
-      '<p>tango\n::: my-div\nThis is a paragraph.\n:::</p>',
-      'should not support a fencedDiv block right after a paragraph'
-      )
-      /*
+  )
+  t.equal(
+    String(toHtml.processSync('tango\n::: my-div\nThis is a paragraph.\n:::')),
+    '<p>tango</p>\n<div class="my-div"><p>This is a paragraph.</p></div>',
+    'should support a fencedDiv block right after a paragraph(different from pandoc)'
+  )
   t.equal(
     String(
       toHtml.processSync('tango\n\n::: my-div\nThis is a paragraph.\n:::')
     ),
     '<p>tango</p>\n<div class="my-div"><p>This is a paragraph.</p></div>',
-    'the opening fence should be preceeded by an empty line'
+    'the opening fence can be preceeded by an empty line'
   )
+
   t.equal(
     String(
       toHtml.processSync(
@@ -377,11 +377,12 @@ test('remark-fenced-divs', function (t) {
     '<p>tango</p>\n<div class="my-div"><p>This is a paragraph.</p></div>',
     'the opening fence should be preceeded by a line containing only spaces and tabs'
   )
+  /*
   t.equal(
     String(toHtml.processSync('::: my-div\nThis is a paragraph.\n\nmust  :::')),
     '<p>::: my-div\nThis is a paragraph.</p>\n<p>must  :::</p>',
     'the closing fence should be at the beginning of the line.'
-  )
+    )
   t.equal(
     String(toHtml.processSync('::: my-div\n1+1 = 2')),
     '<p>::: my-div\n1+1 = 2</p>',

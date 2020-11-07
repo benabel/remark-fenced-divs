@@ -1,10 +1,11 @@
 # remark-fenced-divs
 
-## Note!
+## Important!
 
-This plugin isn't ready for the new parser in remark
-([`remarkjs/remark#536`](https://github.com/remarkjs/remark/pull/536)).
-**You need to use remark version lesser than 13.**
+This plugin is made for the new parser in remark
+([`micromark`](https://github.com/micromark/micromark),
+see [`remarkjs/remark#536`](https://github.com/remarkjs/remark/pull/536)).
+Use this plugin for remark 13+.
 
 ## Getting started
 
@@ -48,20 +49,20 @@ Will be rendered in `html` as:
 
 From `pandoc` reference: <https://pandoc.org/MANUAL.html#extension-fenced_divs>
 
-- \[x] A Div must start at the beginning of a line: it mustn't be indented.
+- [x] A Div must start at the beginning of a line: it mustn't be indented.
 - [x] A Div starts with a fence containing at least three consecutive colons
   plus some attributes.
 - \[x] The attributes may optionally be followed by another string of
   consecutive colons.
-- \[x] The attribute syntax is exactly as in fenced code blocks (see Extension:
+- [x] The attribute syntax is exactly as in fenced code blocks (see Extension:
   fenced_code_attributes). As with fenced code blocks, one can use either
   attributes in curly braces or
 - [x] a single unbraced word, which will be treated as a class name.
 - [x] The Div must ends with another line containing a string of at least
   three consecutive colons at the beginning of the line.
-- The fenced Div should be separated by blank lines:
-- \[x] from preceding
-- \[x] and following blocks.
+- ~~The fenced Div should be separated by blank lines:~~
+  - [ ] ~~from preceding~~
+  - [ ] ~~and following blocks.~~
 - \[x] The fenced Div can be nested.
 
 Other implementations details include:
@@ -70,6 +71,7 @@ Other implementations details include:
 - If no closing fence is found, the container runs to the end of its parent
   container (block quote, list item, document, or other container).
 - A fenced div can be indented.
+- It is not necessary to add a blank line before and after the fenced div.
 
 ## Acknowledgments
 
