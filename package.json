@@ -23,7 +23,9 @@
   "types": "types/index.d.ts",
   "files": [
     "types/index.d.ts",
-    "index.js"
+    "index.js",
+    "micromark-extension-fenced-divs/",
+    "mdast-util-fenced-divs/"
   ],
   "dependencies": {
     "micromark": "~2.10.0",
