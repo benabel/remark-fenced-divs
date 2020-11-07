@@ -503,6 +503,25 @@ Here is a paragraph.
     '<div class="plus" data-titre="&#x22;Bonjour&#x22;"><p>Here is a paragraph.</p></div>',
     'should support extended attributes with single quoted strings including single quotes as data'
   )
+  /*
+   T.deepEqual(
+     toTree(
+         `::::: parent
+Here is a paragraph.
+
+::: children
+
+In children
+:::
+
+In parent
+
+:::::`
+       ),
+     '<div class="parent"><p>Here is a paragraph.</p><div class="children"><p>In children</p></div>\n<p>In parent</p>\n</div>',
+     'should support nested divs'
+   )
+  */
 
   t.end()
 })

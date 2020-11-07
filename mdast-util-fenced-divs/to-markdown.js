@@ -122,8 +122,10 @@ function inlineDirectiveLabel(node) {
 }
 
 function fence(node) {
+  var size = 3
+
   visit(node, 'fencedDiv', onvisit)
-  return repeatString(':', 3)
+  return repeatString(':', size)
 
   function onvisit(node, parents) {
     var index = parents.length
