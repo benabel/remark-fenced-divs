@@ -1,7 +1,5 @@
 'use strict'
 
-var fs = require('fs')
-var path = require('path')
 var test = require('tape')
 var vfile = require('to-vfile')
 var unified = require('unified')
@@ -9,10 +7,7 @@ var remark = require('remark')
 var parse = require('remark-parse')
 var remark2rehype = require('remark-rehype')
 var rehypeStringify = require('rehype-stringify')
-var u = require('unist-builder')
 var removePosition = require('unist-util-remove-position')
-var not = require('not')
-var hidden = require('is-hidden')
 var fencedDiv = require('..')
 
 test('directive()', function (t) {
@@ -26,53 +21,7 @@ test('directive()', function (t) {
 
   t.end()
 })
-/*
-test('fixtures', function (t) {
-  var base = path.join(__dirname, 'fixtures')
-  var entries = fs.readdirSync(base).filter(not(hidden))
 
-  t.plan(entries.length)
-
-  entries.forEach(each)
-
-  function each(fixture) {
-    t.test(fixture, function (st) {
-      var file = vfile.readSync(path.join(base, fixture, 'input.md'))
-      var input = String(file.contents)
-      var outputPath = path.join(base, fixture, 'output.md')
-      var treePath = path.join(base, fixture, 'tree.json')
-      var proc
-      var actual
-      var output
-      var expected
-
-      // md -> mdast -> md
-      proc = remark().use(fencedDiv).freeze()
-      actual = proc.parse(file)
-
-      try {
-        expected = JSON.parse(fs.readFileSync(treePath))
-      } catch (_) {
-        // New fixture.
-        fs.writeFileSync(treePath, JSON.stringify(actual, 0, 2) + '\n')
-        expected = actual
-      }
-
-      try {
-        output = fs.readFileSync(outputPath, 'utf8')
-      } catch (_) {
-        output = input
-      }
-
-      st.deepEqual(actual, expected, 'tree')
-      st.equal(String(proc.processSync(file)), output, 'process')
-
-
-      st.end()
-    })
-  }
-})
-*/
 test('remark-fenced-divs', function (t) {
   const toHtml = unified()
     .use(parse)
@@ -153,7 +102,7 @@ test('remark-fenced-divs', function (t) {
         }
       ]
     },
-    'should not support an closing fence lesser than 3'
+    'should not support a closing fence lesser than 3'
   )
 
   t.deepEqual(
@@ -170,22 +119,6 @@ test('remark-fenced-divs', function (t) {
       ]
     },
     'should support spaces after closing fence'
-  )
-
-  t.deepEqual(
-    toTree('  ::: my-div\n  This is a paragraph.\n  :::').children[0],
-    {
-      type: 'fencedDiv',
-      attributes: {},
-      data: {hName: 'div', hProperties: {className: ['my-div']}},
-      children: [
-        {
-          type: 'paragraph',
-          children: [{type: 'text', value: 'This is a paragraph.'}]
-        }
-      ]
-    },
-    'should support indented fencedDiv block'
   )
 
   t.equal(
@@ -208,32 +141,51 @@ test('remark-fenced-divs', function (t) {
     'should automatically close at the end of the parent if no closing fence is found'
   )
 
-  /* 
   t.equal(
-    unified()
-      .use(parse, {position: false})
-      .use(fencedDiv)
-      .parse('  :::\n    This is a paragraph.\n:::'),
-    u('root', [
-      u('paragraph', {
-        children: [u('text', '  :::\n    This is a paragraph.\n:::')]
-      })
-    ]),
-    'should not support indented opening fencedDiv block'
+    String(toHtml.processSync(' ::: my-div\n This is a paragraph.\n :::')),
+    '<div class="my-div"><p>This is a paragraph.</p></div>',
+    'should support indented fencedDiv block (1 space)'
   )
+
   t.equal(
-    unified()
-      .use(parse, {position: false})
-      .use(fencedDiv)
-      .parse(':::\n    This is a paragraph.\n   :::'),
-    u('root', [
-      u('paragraph', {
-        children: [u('text', ':::\n    This is a paragraph.\n   :::')]
-      })
-    ]),
-    'should not support indented closing fencedDiv block'
+    String(toHtml.processSync('  ::: my-div\n  This is a paragraph.\n  :::')),
+    '<div class="my-div"><p>This is a paragraph.</p></div>',
+    'should support indented fencedDiv block (2 spaces)'
   )
-  */
+
+  t.equal(
+    String(
+      toHtml.processSync('   ::: my-div\n   This is a paragraph.\n   :::')
+    ),
+    '<div class="my-div"><p>This is a paragraph.</p></div>',
+    'should support indented fencedDiv block (3 spaces)'
+  )
+
+  t.equal(
+    String(toHtml.processSync('  ::: my-div\n    This is a paragraph.\n:::')),
+    '<div class="my-div"><p>This is a paragraph.</p></div>',
+    'should support indented opening fencedDiv block'
+  )
+
+  t.equal(
+    String(toHtml.processSync('::: my-div\n   This is a paragraph.\n   :::')),
+    '<div class="my-div"><p>This is a paragraph.</p></div>',
+    'should support indented closing fencedDiv block'
+  )
+
+  t.equal(
+    String(toHtml.processSync('    ::: my-div\n    This is a paragraph.\n:::')),
+    '<pre><code>::: my-div\nThis is a paragraph.\n</code></pre>\n<p>:::</p>',
+    'should not support indented opening fencedDiv block with 4 spaces'
+  )
+
+  t.equal(
+    String(
+      toHtml.processSync('::: my-div\n   This is a paragraph.\n    :::\nhello')
+    ),
+    '<div class="my-div"><p>This is a paragraph.\n:::\nhello</p></div>',
+    'should not support indented closing fencedDiv block with 4 spaces'
+  )
 
   t.equal(
     String(
@@ -244,11 +196,13 @@ test('remark-fenced-divs', function (t) {
     '<div class="my-div"><p>This is a paragraph.</p></div>\n<pre><code>bravo\n</code></pre>',
     'should not affect the next block'
   )
+
   t.equal(
     String(toHtml.processSync('::: my-div my-div2\nThis is a paragraph.\n:::')),
     '<p>::: my-div my-div2\nThis is a paragraph.\n:::</p>',
     'should not support spaces in names'
   )
+
   t.equal(
     String(toHtml.processSync(':::my-div\nI am just `javascript`\n:::')),
     '<div class="my-div"><p>I am just <code>javascript</code></p></div>',
@@ -290,11 +244,13 @@ test('remark-fenced-divs', function (t) {
     '<div class="must"><p>This is a paragraph.</p></div>',
     'should allow extra spaces after named attribute'
   )
+
   t.equal(
     String(toHtml.processSync(':::  my-div\nThis is a paragraph.\n:::')),
     '<div class="my-div"><p>This is a paragraph.</p></div>',
     'should include values after the opening fence (except for spacing #2)'
   )
+
   t.equal(
     String(
       toHtml.processSync(
@@ -304,6 +260,7 @@ test('remark-fenced-divs', function (t) {
     '<div class="my-div"><p>This is a paragraph.</p></div>',
     'should allow fence delimiter at the end of the opening fence without space'
   )
+
   t.equal(
     String(
       toHtml.processSync(
@@ -313,6 +270,7 @@ test('remark-fenced-divs', function (t) {
     '<div class="my-div"><p>This is a paragraph.</p></div>',
     'should allow fence delimiter at the end of the opening fence with spaces'
   )
+
   t.equal(
     String(
       toHtml.processSync(
@@ -322,6 +280,7 @@ test('remark-fenced-divs', function (t) {
     '<div class="my-div"><p>This is a paragraph.</p></div>',
     'should allow fence delimiter or space at the end of the opening fence'
   )
+
   t.equal(
     String(
       toHtml.processSync(
@@ -331,26 +290,19 @@ test('remark-fenced-divs', function (t) {
     '<div class="my-div"><p>This is a paragraph.</p></div>',
     'should allow fence delimiter or space at the end of the opening fence'
   )
+
   t.equal(
     String(toHtml.processSync(':::     :::\nThis is a paragraph.\n:::')),
     '<p>:::     :::\nThis is a paragraph.\n:::</p>',
-    'should not allow empty attribute in the opening fence'
+    'should not allow empty name/attributes in the opening fence'
   )
-  t.equal(
-    String(toHtml.processSync('   :::\n   1+1 = 2\n   :::')),
-    '<p>:::\n1+1 = 2\n:::</p>',
-    'Should not allow initial spacing'
-  )
-  t.equal(
-    String(toHtml.processSync('    :::\n    1+1 = 2\n    :::')),
-    '<pre><code>:::\n1+1 = 2\n:::\n</code></pre>',
-    'Should not allow initial spacing: 4 means a code block'
-  )
+
   t.equal(
     String(toHtml.processSync('tango\n::: my-div\nThis is a paragraph.\n:::')),
     '<p>tango</p>\n<div class="my-div"><p>This is a paragraph.</p></div>',
     'should support a fencedDiv block right after a paragraph(different from pandoc)'
   )
+
   t.equal(
     String(
       toHtml.processSync('tango\n\n::: my-div\nThis is a paragraph.\n:::')
@@ -368,6 +320,7 @@ test('remark-fenced-divs', function (t) {
     '<p>tango</p>\n<div class="my-div"><p>This is a paragraph.</p></div>',
     'the opening fence should be preceeded by a line containing only spaces'
   )
+
   t.equal(
     String(
       toHtml.processSync(
@@ -377,27 +330,25 @@ test('remark-fenced-divs', function (t) {
     '<p>tango</p>\n<div class="my-div"><p>This is a paragraph.</p></div>',
     'the opening fence should be preceeded by a line containing only spaces and tabs'
   )
-  /*
-  t.equal(
-    String(toHtml.processSync('::: my-div\nThis is a paragraph.\n\nmust  :::')),
-    '<p>::: my-div\nThis is a paragraph.</p>\n<p>must  :::</p>',
-    'the closing fence should be at the beginning of the line.'
-    )
+
   t.equal(
     String(toHtml.processSync('::: my-div\n1+1 = 2')),
-    '<p>::: my-div\n1+1 = 2</p>',
-    'fencedDiv block should be closed'
+    '<div class="my-div"><p>1+1 = 2</p></div>',
+    'If no closing fence is found, the container runs to the end of its parent container'
   )
+
   t.equal(
     String(toHtml.processSync('::: my-div\nThis is a paragraph.\n:::  ')),
     '<div class="my-div"><p>This is a paragraph.</p></div>',
     'should exclude spacing after the closing fence'
   )
+
   t.equal(
     String(toHtml.processSync('::: my-div\nThis is a paragraph.\n:::::::')),
     '<div class="my-div"><p>This is a paragraph.</p></div>',
     'should allow more than three delimiters for closing fence'
   )
+
   t.equal(
     String(
       toHtml.processSync('::: my-div\nThis is a paragraph.\n:::::::      ')
@@ -405,30 +356,42 @@ test('remark-fenced-divs', function (t) {
     '<div class="my-div"><p>This is a paragraph.</p></div>',
     'should allow more than three delimiters and exclude spaces for closing fence'
   )
+
   t.equal(
     String(
       toHtml.processSync('::: my-div\nThis is a paragraph.\n:::::::    here')
     ),
-    '<p>::: my-div\nThis is a paragraph.\n:::::::    here</p>',
+    '<div class="my-div"><p>This is a paragraph.</p><div class="here"></div></div>',
     'should not allow anything except spaces and delimiters at the end of the closing fence'
   )
+
+  t.equal(
+    String(
+      toHtml.processSync('::: my-div\nThis is a paragraph.\n:::::::    `here`')
+    ),
+    '<div class="my-div"><p>This is a paragraph.\n:::::::    <code>here</code></p></div>',
+    'should not allow anything except spaces and delimiters at the end of the closing fence'
+  )
+
   t.equal(
     String(
       toHtml.processSync(
         `::::: {.my-class-1 .my-class-2 #my-id key1=val1 key2=2}
 
 Here is a paragraph.
-
-
-
+        
+        
+        
 And another.
-
+        
 :::::`
       )
     ),
-    '<div id="my-id" class="my-class-1 my-class-2" data-key1="val1" data-key2="2"><p>Here is a paragraph.</p><p>And another.</p></div>',
+    '<div class="my-class-1 my-class-2" id="my-id" data-key1="val1" data-key2="2"><p>Here is a paragraph.</p><p>And another.</p></div>',
     'should support extended attributes'
   )
+
+  
   t.equal(
     String(
       toHtml.processSync(
@@ -446,6 +409,7 @@ And another.
     '<div id="my-id"><p>Here is a paragraph.</p><p>And another.</p></div>',
     'should support extended attributes with only one id'
   )
+
   t.equal(
     String(
       toHtml.processSync(
@@ -463,6 +427,7 @@ And another.
     '<div class="my-class"><p>Here is a paragraph.</p><p>And another.</p></div>',
     'should support extended attributes with only one class'
   )
+
   t.equal(
     String(
       toHtml.processSync(
@@ -480,6 +445,7 @@ And another.
     '<div data-selected="selected" data-percent="50"><p>Here is a paragraph.</p><p>And another.</p></div>',
     'should support extended attributes with only key vals data'
   )
+
   t.equal(
     String(
       toHtml.processSync(
@@ -491,6 +457,7 @@ Here is a paragraph.
     '<div data-key1="val" data-key2="val2" data-key3="val3"><p>Here is a paragraph.</p></div>',
     'should support extended attributes with quoted strings as vals data'
   )
+
   t.equal(
     String(
       toHtml.processSync(
@@ -502,6 +469,7 @@ Here is a paragraph.
     '<div class="plus" data-titre="Comment appliquer des changements rapidement?"><p>Here is a paragraph.</p></div>',
     'should support extended attributes with double quoted strings including spaces as data'
   )
+
   t.equal(
     String(
       toHtml.processSync(
@@ -513,6 +481,7 @@ Here is a paragraph.
     '<div class="plus" data-titre="Comment appliquer des changements rapidement?"><p>Here is a paragraph.</p></div>',
     'should support extended attributes with single quoted strings including spaces as data'
   )
+
   t.equal(
     String(
       toHtml.processSync(
@@ -524,6 +493,7 @@ Here is a paragraph.
     '<div class="plus" data-titre="L&#x27;algorithme est-il efficace?"><p>Here is a paragraph.</p></div>',
     'should support extended attributes with single quoted strings including single quotes as data'
   )
+
   t.equal(
     String(
       toHtml.processSync(
@@ -535,6 +505,6 @@ Here is a paragraph.
     '<div class="plus" data-titre="&#x22;Bonjour&#x22;"><p>Here is a paragraph.</p></div>',
     'should support extended attributes with single quoted strings including single quotes as data'
   )
-  */
+
   t.end()
 })

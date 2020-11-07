@@ -70,7 +70,7 @@ Other implementations details include:
 - A Div ends with a fence containing at least three consecutive colons plus some spaces.
 - If no closing fence is found, the container runs to the end of its parent
   container (block quote, list item, document, or other container).
-- A fenced div can be indented.
+- A fenced div can be indented with up to 3 spaces.
 - It is not necessary to add a blank line before and after the fenced div.
 
 ## Acknowledgments
