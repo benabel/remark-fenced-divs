@@ -12,8 +12,7 @@ function createDirectiveHtmlExtension(options) {
     enter: {
       directiveContainer: enterContainer,
       directiveContainerAttributes: enterAttributes,
-      directiveContainerContent: enterContainerContent,
-
+      directiveContainerContent: enterContainerContent
     },
     exit: {
       directiveContainer: exit,
@@ -24,8 +23,7 @@ function createDirectiveHtmlExtension(options) {
       directiveContainerAttributes: exitAttributes,
       directiveContainerContent: exitContainerContent,
       directiveContainerFence: exitContainerFence,
-      directiveContainerName: exitName,
-      
+      directiveContainerName: exitName
     }
   }
 

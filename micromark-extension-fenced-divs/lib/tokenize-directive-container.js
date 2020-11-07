@@ -43,7 +43,7 @@ function tokenizeDirectiveContainer(effects, ok, nok) {
   }
 
   function beforeName(code) {
-    // allow spaces before name
+    // Allow spaces before name
     if (markdownSpace(code)) {
       effects.consume(code)
       return beforeName
@@ -63,7 +63,7 @@ function tokenizeDirectiveContainer(effects, ok, nok) {
   }
 
   function sequenceOpenEndFence(code) {
-    // allow colons at the end of the opening fence
+    // Allow colons at the end of the opening fence
     if (code === 58 /* `:` */) {
       effects.consume(code)
       return sequenceOpenEndFence

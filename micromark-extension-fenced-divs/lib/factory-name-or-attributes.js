@@ -8,23 +8,20 @@ var attributes = {tokenize: tokenizeAttributes}
 
 // To do: use `dist/`
 var asciiAlpha = require('micromark/dist/character/ascii-alpha')
-var asciiAlphanumeric = require('micromark/dist/character/ascii-alphanumeric')
 
-function isNameOrAttribute(effects, ok, nok, nameType) {
+function isNameOrAttribute(effects, ok, nok) {
   return start
 
   function start(code) {
-    // switch
+    // Switch
     if (asciiAlpha(code)) {
-      return createName(
-        effects,
-        ok,
-        nok,
-        'directiveContainerName'
-      )(code)
-    } else if (code === 123 /* `{` */) {
+      return createName(effects, ok, nok, 'directiveContainerName')(code)
+    }
+
+    if (code === 123 /* `{` */) {
       return effects.attempt(attributes, ok, nok)(code)
     }
+
     return nok(code)
   }
 }

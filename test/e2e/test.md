@@ -55,7 +55,6 @@ This is a warning within a warning.
 
 ::::::::::::::::::
 
-
 ## divs shouldn't be indented
 
 ::::: {#special .sidebar}

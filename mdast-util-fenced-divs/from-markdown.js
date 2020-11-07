@@ -87,24 +87,25 @@ function exitAttributes() {
   this.setData('directiveAttributes')
   this.resume() // Drop EOLs
   this.stack[this.stack.length - 1].attributes = cleaned
-  
-  // set hProperties for HAST
+
+  // Set hProperties for HAST
   for (const [key, value] of Object.entries(cleaned)) {
     switch (key) {
-
       case 'id':
-      this.stack[this.stack.length - 1].data.hProperties.id = cleaned.id
-         break;
+        this.stack[this.stack.length - 1].data.hProperties.id = cleaned.id
+        break
 
       case 'class':
         this.stack[
           this.stack.length - 1
         ].data.hProperties.className = cleaned.class.split(' ')
-        break;
-    
+        break
+
       default:
-        this.stack[this.stack.length - 1].data.hProperties[`data-${key}`] = value
-        break;
+        this.stack[this.stack.length - 1].data.hProperties[
+          `data-${key}`
+        ] = value
+        break
     }
   }
 }

@@ -3,7 +3,6 @@
 module.exports = createName
 
 // To do: use `dist/`
-var asciiAlpha = require('micromark/dist/character/ascii-alpha')
 var asciiAlphanumeric = require('micromark/dist/character/ascii-alphanumeric')
 
 function createName(effects, ok, nok, nameType) {

@@ -2,7 +2,6 @@ const test = require('tape')
 const unified = require('unified')
 const parse = require('remark-parse')
 const stringify = require('remark-stringify')
-const u = require('unist-builder')
 const fencedDiv = require('..')
 
 function toMd(string) {

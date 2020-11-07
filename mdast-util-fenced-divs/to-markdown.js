@@ -9,7 +9,7 @@ exports.unsafe = [
 ]
 
 exports.handlers = {
-  fencedDiv: handleDirective,
+  fencedDiv: handleDirective
 }
 
 handleDirective.peek = peekDirective
@@ -18,7 +18,6 @@ var repeatString = require('repeat-string')
 var encode = require('stringify-entities/light')
 var visit = require('unist-util-visit-parents')
 var flow = require('mdast-util-to-markdown/lib/util/container-flow')
-var phrasing = require('mdast-util-to-markdown/lib/util/container-phrasing')
 var checkQuote = require('mdast-util-to-markdown/lib/util/check-quote')
 
 var own = {}.hasOwnProperty
@@ -28,10 +27,7 @@ var shortcut = /^[^\t\n\r "#'.<=>`}]+$/
 function handleDirective(node, _, context) {
   var prefix = fence(node)
   var exit = context.enter(node.type)
-  var value =
-    prefix +
-    (node.name || '') +
-    attributes(node, context)
+  var value = prefix + (node.name || '') + attributes(node, context)
   var subvalue
 
   if (node.type === 'fencedDiv') {
@@ -78,10 +74,9 @@ function attributes(node, context) {
           )
         }
 
-        classesFull = classesFull.length
-          ? quoted('class', classesFull.join(' '))
-          : ''
-        classes = classes.length ? '.' + classes.join('.') : ''
+        classesFull =
+          classesFull.length > 0 ? quoted('class', classesFull.join(' ')) : ''
+        classes = classes.length > 0 ? '.' + classes.join('.') : ''
       } else {
         values.push(quoted(key, value))
       }
@@ -100,7 +95,7 @@ function attributes(node, context) {
     values.unshift(id)
   }
 
-  return values.length ? '{' + values.join(' ') + '}' : ''
+  return values.length > 0 ? '{' + values.join(' ') + '}' : ''
 
   function quoted(key, value) {
     return (
@@ -127,7 +122,6 @@ function inlineDirectiveLabel(node) {
 }
 
 function fence(node) {
-  
   visit(node, 'fencedDiv', onvisit)
   return repeatString(':', 3)
 

@@ -1,7 +1,6 @@
 'use strict'
 
 var test = require('tape')
-var vfile = require('to-vfile')
 var unified = require('unified')
 var remark = require('remark')
 var parse = require('remark-parse')
@@ -391,7 +390,6 @@ And another.
     'should support extended attributes'
   )
 
-  
   t.equal(
     String(
       toHtml.processSync(
