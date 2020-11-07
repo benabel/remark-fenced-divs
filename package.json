@@ -34,9 +34,6 @@
   },
   "devDependencies": {
     "dtslint": "^4.0.0",
-    "html-void-elements": "^1.0.5",
-    "is-hidden": "^1.0.0",
-    "not": "^0.1.0",
     "nyc": "^15.0.0",
     "onchange": "^7.1.0",
     "prettier": "^2.0.0",
@@ -51,7 +48,6 @@
     "tape": "^5.0.0",
     "to-vfile": "^6.0.0",
     "unified": "^9.0.0",
-    "unist-builder": "^2.0.3",
     "unist-util-remove-position": "^3.0.0",
     "xo": "^0.34.0"
   },

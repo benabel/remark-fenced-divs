@@ -7,6 +7,9 @@ This plugin is made for the new parser in remark
 see [`remarkjs/remark#536`](https://github.com/remarkjs/remark/pull/536)).
 Use this plugin for remark 13+.
 
+If you don't need Pandoc compatibility you should consider using
+[remark-directive](https://github.com/remarkjs/remark-directive).
+
 ## Getting started
 
 Fenced divs are some kind of generic syntax for block contents with a syntax

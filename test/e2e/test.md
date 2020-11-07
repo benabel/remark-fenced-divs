@@ -52,7 +52,9 @@ This is a warning.
 ::: Danger
 This is a warning within a warning.
 :::
+
 ::::::::::::::::::
+
 
 ## divs shouldn't be indented
 
@@ -64,7 +66,9 @@ And another.
 
 :::::
 
-## should be surrounded with blank lines
+## Differences
+
+### Pandoc should be surrounded with blank lines
 
 Bonjour
 
@@ -73,7 +77,7 @@ This is a warning.
 :::
 Aurevoir
 
-## Don't auto close at end of file
+## Pandoc don't auto close at end of file
 
 ::: Warning ::::::
 This is a warning.
