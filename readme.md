@@ -1,3 +1,7 @@
+# ARCHIVED: This plugin has never been completely adapted for remark 13+.
+
+If you don't need Pandoc compatibility and remarl 13+ you should consider using
+[remark-directive](https://github.com/remarkjs/remark-directive).
 # remark-fenced-divs
 
 ## Important!
